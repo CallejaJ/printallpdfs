@@ -46,7 +46,7 @@ test('merges PDFs with ordering, copies and duplex padding', async () => {
   await page.waitForFunction(() => document.querySelectorAll('#list li').length === 3);
   assert.match(await page.textContent('#status'), /Skipped 1 non-PDF/);
 
-  await page.selectOption('#sort', 'name');
+  await page.check('input[name="sort"][value="name"]', { force: true });
   assert.deepStrictEqual(await page.$$eval('#list .name', (els) => els.map((e) => e.textContent)), ['a.pdf', 'b.pdf', 'c.pdf']);
 
   await page.fill('#copies', '2');

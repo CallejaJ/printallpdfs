@@ -33,7 +33,7 @@ Files are added by drag and drop or the file picker and kept in an in-memory `it
 |---|---|
 | **Accepted input** | `application/pdf` or `.pdf` extension; other files are skipped and reported |
 | **Unreadable files** | Marked as "Unreadable" and excluded from the merge |
-| **Ordering** | Manual (up/down buttons), by name (numeric-aware `localeCompare`), or by last-modified date |
+| **Ordering** | Segmented control for manual (up/down buttons), by name (numeric-aware `localeCompare`) or by last-modified date, with an ascending/descending toggle |
 | **Removal** | Per-file remove button and a "Clear list" action |
 | **Size guidance** | Shows the total batch size and warns above 500 MB (`SIZE_WARN_BYTES`), since merging happens in browser memory |
 

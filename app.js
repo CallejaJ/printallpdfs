@@ -25,6 +25,11 @@
       orderName: 'By name',
       orderDate: 'By date',
       copies: 'Copies',
+      copiesHint: 'How many times the whole batch is printed, from 1 to 50.',
+      orderHint: {manual: 'Use the arrows in the list to set your own order.', name: 'Alphabetical, with numbers in natural order (2 before 10).', date: 'Based on the last modified date of each file.'},
+      dirAsc: {manual: '', name: 'A → Z', date: 'Oldest first'},
+      dirDesc: {manual: '', name: 'Z → A', date: 'Newest first'},
+      dirToggle: 'Reverse order',
       blank: 'Duplex padding',
       blankHint: 'Adds a blank page after odd-length documents so each one starts on a new sheet.',
       statFiles: 'PDFs',
@@ -88,6 +93,11 @@
       orderName: 'Por nombre',
       orderDate: 'Por fecha',
       copies: 'Copias',
+      copiesHint: 'Cuántas veces se imprime el lote completo, de 1 a 50.',
+      orderHint: {manual: 'Usa las flechas de la lista para decidir tu propio orden.', name: 'Alfabético, con los números en orden natural (2 antes que 10).', date: 'Según la fecha de última modificación de cada archivo.'},
+      dirAsc: {manual: '', name: 'A → Z', date: 'Más antiguos primero'},
+      dirDesc: {manual: '', name: 'Z → A', date: 'Más recientes primero'},
+      dirToggle: 'Invertir el orden',
       blank: 'Relleno para doble cara',
       blankHint: 'Añade una página en blanco tras los documentos impares para que cada uno empiece en hoja nueva.',
       statFiles: 'PDF',
@@ -164,6 +174,7 @@
     document.querySelectorAll('.lang-btn').forEach((b) => b.classList.toggle('active', b.dataset.lang === lang));
     $('list').dataset.empty = t('empty');
     paintTheme();
+    paintSort();
     render();
     paintStatus();
   }
@@ -195,6 +206,21 @@
   let items = []; // { file, pages, error }
   let lastUrl = null;
   let busy = false;
+  let sortDir = 'asc';
+  const getSort = () => document.querySelector('input[name="sort"]:checked').value;
+  function setSort(mode) {
+    document.querySelector(`input[name="sort"][value="${mode}"]`).checked = true;
+    paintSort();
+  }
+  function paintSort() {
+    const mode = getSort();
+    const btn = $('sortDir');
+    btn.hidden = mode === 'manual';
+    btn.dataset.dir = sortDir;
+    btn.title = t('dirToggle');
+    $('sortDirText').textContent = STRINGS[lang][sortDir === 'asc' ? 'dirAsc' : 'dirDesc'][mode];
+    $('orderHint').textContent = STRINGS[lang].orderHint[mode];
+  }
   const SIZE_WARN_BYTES = 500 * 1024 * 1024;
 
   const fmtSize = (b) => (b < 1048576 ? (b / 1024).toFixed(0) + ' KB' : b < 1073741824 ? (b / 1048576).toFixed(1) + ' MB' : (b / 1073741824).toFixed(2) + ' GB');
@@ -220,9 +246,10 @@
   }
 
   function applySort() {
-    const mode = $('sort').value;
-    if (mode === 'name') items.sort((a, b) => a.file.name.localeCompare(b.file.name, lang, { numeric: true }));
-    if (mode === 'date') items.sort((a, b) => a.file.lastModified - b.file.lastModified);
+    const mode = getSort();
+    const sign = sortDir === 'desc' ? -1 : 1;
+    if (mode === 'name') items.sort((a, b) => sign * a.file.name.localeCompare(b.file.name, lang, { numeric: true }));
+    if (mode === 'date') items.sort((a, b) => sign * (a.file.lastModified - b.file.lastModified));
   }
 
   function totals() {
@@ -276,7 +303,7 @@
     if (a === 'del') items.splice(i, 1);
     if (a === 'up' && i > 0) [items[i - 1], items[i]] = [items[i], items[i - 1]];
     if (a === 'down' && i < items.length - 1) [items[i + 1], items[i]] = [items[i], items[i + 1]];
-    if (a !== 'del') $('sort').value = 'manual';
+    if (a !== 'del') setSort('manual');
     render();
   }
 
@@ -346,8 +373,21 @@
   });
 
   $('clear').onclick = () => { items = []; setStatus(null); render(); };
-  $('sort').onchange = () => { applySort(); render(); };
+  document.querySelectorAll('input[name="sort"]').forEach((r) => {
+    r.onchange = () => { applySort(); paintSort(); render(); };
+  });
+  $('sortDir').onclick = () => {
+    sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    applySort();
+    paintSort();
+    render();
+  };
+
+  const clampCopies = (v) => Math.max(1, Math.min(50, parseInt(v, 10) || 1));
+  $('copiesDown').onclick = () => { $('copies').value = clampCopies($('copies').value) - 1 || 1; render(); };
+  $('copiesUp').onclick = () => { $('copies').value = Math.min(50, clampCopies($('copies').value) + 1); render(); };
   $('copies').oninput = render;
+  $('copies').onblur = () => { $('copies').value = clampCopies($('copies').value); render(); };
   $('blank').onchange = render;
 
   // ---------- drop zone ----------
