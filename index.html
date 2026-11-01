@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDFallprint</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --card: #ffffff; --text: #1d1d1b; --muted: #6b6a66;
+    --line: #e2e0da; --accent: #2f5bd3; --accent-text: #fff; --danger: #c0392b; --drop: #eef2fd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #151514; --card: #1f1f1d; --text: #ecebe7; --muted: #9c9a94;
+      --line: #33322f; --accent: #6d8ff0; --accent-text: #0d0d0c; --danger: #ef6b5b; --drop: #1d2438;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  #drop { border: 2px dashed var(--line); border-radius: 12px; background: var(--card);
+    padding: 36px 16px; text-align: center; cursor: pointer; transition: .15s; }
+  #drop.over { border-color: var(--accent); background: var(--drop); }
+  #drop strong { display: block; font-size: 1.1rem; }
+  #drop span { color: var(--muted); font-size: .9rem; }
+  ul { list-style: none; padding: 0; margin: 20px 0; }
+  li { display: flex; align-items: center; gap: 8px; background: var(--card);
+    border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; }
+  li .n { color: var(--muted); width: 1.6em; text-align: right; font-variant-numeric: tabular-nums; }
+  li .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  li .meta { color: var(--muted); font-size: .85rem; white-space: nowrap; }
+  li.err .meta { color: var(--danger); }
+  li button { background: none; border: 1px solid var(--line); color: var(--text);
+    border-radius: 6px; width: 30px; height: 30px; cursor: pointer; }
+  li button:hover { border-color: var(--accent); }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 16px 0; }
+  label { color: var(--muted); font-size: .95rem; }
+  input[type=number], select { background: var(--card); color: var(--text); border: 1px solid var(--line);
+    border-radius: 6px; padding: 6px 8px; font: inherit; width: 5em; }
+  select { width: auto; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .btn { border: 1px solid var(--line); background: var(--card); color: var(--text);
+    border-radius: 8px; padding: 10px 16px; font: inherit; cursor: pointer; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  #status { margin-top: 16px; color: var(--muted); min-height: 1.5em; }
+  .note { margin-top: 32px; font-size: .85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>PDFallprint</h1>
+  <p class="sub">Imprime muchos PDF de una vez: se unen en tu navegador y salen con un solo diálogo de impresión.</p>
+
+  <div id="drop" tabindex="0" role="button" aria-label="Elegir archivos PDF">
+    <strong>Arrastra aquí tus PDF</strong>
+    <span>o haz clic para elegirlos</span>
+  </div>
+  <input id="file" type="file" accept="application/pdf,.pdf" multiple hidden>
+
+  <ul id="list"></ul>
+
+  <div class="row">
+    <label>Orden
+      <select id="sort">
+        <option value="manual">Manual</option>
+        <option value="name">Por nombre</option>
+        <option value="date">Por fecha</option>
+      </select>
+    </label>
+    <label>Copias <input id="copies" type="number" min="1" max="50" value="1"></label>
+    <label><input id="blank" type="checkbox"> Página en blanco entre documentos impares (para doble cara)</label>
+  </div>
+
+  <div class="actions">
+    <button id="print" class="btn primary" disabled>Imprimir todo</button>
+    <button id="download" class="btn" disabled>Descargar PDF unido</button>
+    <button id="clear" class="btn" disabled>Vaciar lista</button>
+  </div>
+  <div id="status" aria-live="polite"></div>
+
+  <p class="note">Los archivos no salen de tu ordenador: todo se procesa en el navegador.
+    Por seguridad, una web no puede imprimir sin mostrar el diálogo; elige la impresora una vez y se imprimen todos.</p>
+</main>
+
+<iframe id="frame" title="Vista de impresión" style="position:fixed;right:0;bottom:0;width:0;height:0;border:0"></iframe>
+
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>window.PDFLib || document.write('<script src="vendor/pdf-lib.min.js"><\/script>');</script>
+<script>
+const { PDFDocument } = PDFLib;
+const $ = id => document.getElementById(id);
+let items = []; // { file, pages, error }
+let lastUrl = null;
+
+const fmtSize = b => b < 1048576 ? (b / 1024).toFixed(0) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
+const setStatus = t => $('status').textContent = t;
+
+async function addFiles(fileList) {
+  const pdfs = [...fileList].filter(f => f.type === 'application/pdf' || /\.pdf$/i.test(f.name));
+  const skipped = fileList.length - pdfs.length;
+  for (const file of pdfs) {
+    const item = { file, pages: null, error: null };
+    items.push(item);
+    try {
+      const doc = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
+      item.pages = doc.getPageCount();
+    } catch (e) { item.error = 'No se puede leer'; }
+  }
+  applySort();
+  render();
+  if (skipped) setStatus(`Se ignoraron ${skipped} archivo(s) que no son PDF.`);
+}
+
+function applySort() {
+  const mode = $('sort').value;
+  if (mode === 'name') items.sort((a, b) => a.file.name.localeCompare(b.file.name, 'es', { numeric: true }));
+  if (mode === 'date') items.sort((a, b) => a.file.lastModified - b.file.lastModified);
+}
+
+function render() {
+  const list = $('list');
+  list.innerHTML = '';
+  items.forEach((it, i) => {
+    const li = document.createElement('li');
+    if (it.error) li.className = 'err';
+    li.innerHTML = `<span class="n">${i + 1}</span><span class="name"></span>
+      <span class="meta">${it.error ? it.error : (it.pages ?? '…') + ' pág · ' + fmtSize(it.file.size)}</span>
+      <button title="Subir" data-a="up">↑</button><button title="Bajar" data-a="down">↓</button>
+      <button title="Quitar" data-a="del">✕</button>`;
+    li.querySelector('.name').textContent = it.file.name;
+    li.querySelectorAll('button').forEach(b => b.onclick = () => act(i, b.dataset.a));
+    list.appendChild(li);
+  });
+  const ok = items.filter(i => !i.error);
+  const total = ok.reduce((s, i) => s + (i.pages || 0), 0);
+  ['print', 'download'].forEach(id => $(id).disabled = ok.length === 0);
+  $('clear').disabled = items.length === 0;
+  setStatus(items.length ? `${ok.length} PDF listos · ${total} páginas` : '');
+}
+
+function act(i, a) {
+  if (a === 'del') items.splice(i, 1);
+  if (a === 'up' && i > 0) [items[i - 1], items[i]] = [items[i], items[i - 1]];
+  if (a === 'down' && i < items.length - 1) [items[i + 1], items[i]] = [items[i], items[i + 1]];
+  if (a !== 'del') $('sort').value = 'manual';
+  render();
+}
+
+async function buildMerged() {
+  const out = await PDFDocument.create();
+  const copies = Math.max(1, Math.min(50, parseInt($('copies').value) || 1));
+  const padBlank = $('blank').checked;
+  const sources = [];
+  for (const it of items.filter(i => !i.error)) {
+    sources.push(await PDFDocument.load(await it.file.arrayBuffer(), { ignoreEncryption: true }));
+  }
+  for (let c = 0; c < copies; c++) {
+    for (const src of sources) {
+      const pages = await out.copyPages(src, src.getPageIndices());
+      pages.forEach(p => out.addPage(p));
+      if (padBlank && pages.length % 2 === 1) {
+        const { width, height } = pages[pages.length - 1].getSize();
+        out.addPage([width, height]);
+      }
+    }
+  }
+  const bytes = await out.save();
+  if (lastUrl) URL.revokeObjectURL(lastUrl);
+  lastUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+  return { url: lastUrl, pages: out.getPageCount() };
+}
+
+async function withBusy(fn) {
+  ['print', 'download', 'clear'].forEach(id => $(id).disabled = true);
+  try { await fn(); } catch (e) { setStatus('Error: ' + e.message); console.error(e); }
+  finally { const s = $('status').textContent; render(); if (s.startsWith('Error') || s.startsWith('Abriendo') || s.startsWith('Descargado')) setStatus(s); }
+}
+
+$('print').onclick = () => withBusy(async () => {
+  setStatus('Uniendo PDF…');
+  const { url, pages } = await buildMerged();
+  const frame = $('frame');
+  frame.onload = () => {
+    try { frame.contentWindow.focus(); frame.contentWindow.print(); }
+    catch (e) { window.open(url, '_blank'); }
+  };
+  frame.src = url;
+  setStatus(`Abriendo el diálogo de impresión (${pages} páginas). Si no aparece, usa "Descargar PDF unido".`);
+});
+
+$('download').onclick = () => withBusy(async () => {
+  setStatus('Uniendo PDF…');
+  const { url, pages } = await buildMerged();
+  const a = document.createElement('a');
+  a.href = url; a.download = 'pdfallprint-unido.pdf'; a.click();
+  setStatus(`Descargado: ${pages} páginas.`);
+});
+
+$('clear').onclick = () => { items = []; render(); };
+$('sort').onchange = () => { applySort(); render(); };
+
+const drop = $('drop');
+drop.onclick = () => $('file').click();
+drop.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('file').click(); } };
+$('file').onchange = e => { addFiles(e.target.files); e.target.value = ''; };
+['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => addFiles(e.dataTransfer.files));
+window.addEventListener('dragover', e => e.preventDefault());
+window.addEventListener('drop', e => e.preventDefault());
+</script>
+</body>
+</html>
