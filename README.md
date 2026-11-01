@@ -62,6 +62,21 @@ Animations use **Motion** (`motion/react`) and follow the operating system's red
 | **Batch list and size warning** | Expand and collapse with height transitions |
 | **How it works and FAQ** | Fade up on scroll with a short stagger |
 
+## Search and Generative Engine Optimization
+
+The app is a single static page, so discoverability is handled at build time by the App Router metadata files and a JSON-LD graph in the root layout.
+
+| Signal | Source | Purpose |
+|---|---|---|
+| **Breadcrumbs** | `components/Breadcrumbs.tsx`, `BreadcrumbList` in `lib/seo.ts` | Visible trail "Jorge Calleja › PrintAllPDFs" plus matching structured data |
+| **robots.txt** | `app/robots.ts` | Allows all crawlers, including Googlebot, Bingbot, GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot and Google-Extended |
+| **sitemap.xml** | `app/sitemap.ts` | Lists the home page and `llms.txt` |
+| **llms.txt** | `public/llms.txt` | Plain-language summary for generative engines: features, limits and privacy |
+| **Structured data** | `lib/seo.ts` | `WebSite`, `Person`, `WebApplication`, `BreadcrumbList`, `HowTo` and `FAQPage` in one `@graph` |
+| **Geo tags** | `lib/site.ts` | `geo.region` ES-AN, `geo.placename` Málaga, `geo.position` and `ICBM` |
+| **Social preview** | `public/og.png` | 1200×630 Open Graph and Twitter card image |
+| **Canonical URL** | `NEXT_PUBLIC_SITE_URL` | Defaults to `https://printallpdfs.vercel.app` |
+
 ## System Architecture
 
 | Component | Role |
@@ -69,9 +84,12 @@ Animations use **Motion** (`motion/react`) and follow the operating system's red
 | **`app/layout.tsx`** | Root layout with theme bootstrap script, language and motion providers, header and footer |
 | **`app/page.tsx`** | Client page that owns queue state, sorting, batches and the print and download flow |
 | **`app/globals.css`** | Design tokens for dark and light themes, layout and component styles |
-| **`components/`** | `SiteHeader`, `SiteFooter`, `DropZone`, `FileQueue`, `PrintOptions`, `HowItWorks`, toggles and icons |
+| **`components/`** | `SiteHeader`, `SiteFooter`, `Breadcrumbs`, `DropZone`, `FileQueue`, `PrintOptions`, `HowItWorks`, toggles and icons |
 | **`lib/pdf.ts`** | Sorting, batching, page counting and merging with pdf-lib |
-| **`lib/i18n.tsx`** | English and Spanish dictionaries with a typed `t()` helper and React context |
+| **`lib/strings.ts`** | English and Spanish dictionaries, shared by the client UI and the server-side structured data |
+| **`lib/i18n.tsx`** | Typed `t()` helper and language React context |
+| **`lib/site.ts`, `lib/seo.ts`** | Site URL, author and geo constants, metadata copy and the JSON-LD graph |
+| **`app/robots.ts`, `app/sitemap.ts`** | Static `robots.txt` and `sitemap.xml` generated at build time |
 | **Hidden print `iframe`** | Hosts each merged PDF and opens the browser print dialog |
 | **`public/images/`** | `favicon.svg` and `logo.svg` brand assets |
 | **`tests/server.js`** | Static server for the exported build, used by `npm start` and the e2e tests |
@@ -101,7 +119,7 @@ Unit tests in `lib/__tests__/pdf.test.ts` run with Jest and cover file filtering
 
 ## Localization
 
-All interface strings live in `lib/i18n.tsx`, with `en` as the default and `es` as the second language. The Spanish dictionary is typed against the English one, so a missing key fails the build. The chosen language and theme are kept in `localStorage` when available.
+All interface strings live in `lib/strings.ts`, with `en` as the default and `es` as the second language. The Spanish dictionary is typed against the English one, so a missing key fails the build. The chosen language and theme are kept in `localStorage` when available.
 
 ## Project Setup
 
@@ -112,7 +130,7 @@ All interface strings live in `lib/i18n.tsx`, with `en` as the default and `es` 
    npx playwright install chromium
    ```
 
-2. No environment variables are required.
+2. No environment variables are required. Set `NEXT_PUBLIC_SITE_URL` only if the production domain differs from `https://printallpdfs.vercel.app`.
 
 3. Start the development server:
 

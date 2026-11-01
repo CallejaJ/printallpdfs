@@ -1,0 +1,33 @@
+# PrintAllPDFs
+
+> Free web app that merges many PDFs in the browser and prints them through a single print dialog, in one job or in batches. Built for warehouses and offices that print dozens of B2B delivery notes (albaranes) every day. Files are processed locally and never uploaded.
+
+PrintAllPDFs is made by Jorge Calleja (Diseño Web Málaga, Andalucía, Spain). It is in public beta and free to use. The interface is available in English and Spanish.
+
+## What it does
+
+- Merges any number of PDFs into one document so the printer is chosen once.
+- Splits long queues into batches of 5, 10 or 20 files so heavy scanned PDFs (around 3 MB each) do not stall office printers. Each batch is tracked as sent or pending.
+- Sorts files by name (natural order, 2 before 10) or by date, ascending or descending, or lets the user drag them into place.
+- Adds an optional blank page after documents with an odd page count, so each document starts on a new sheet when printing on both sides.
+- Leaves copies to the printer dialog, so the merged file does not grow with each copy.
+- Never compresses or re-encodes pages, so quality and barcodes stay intact.
+
+## Limits
+
+- Browsers cannot print without showing the system print dialog; the app opens it once per job.
+- Everything runs in browser memory. Up to about 500 MB per queue works smoothly on a normal computer; the app warns above that.
+- Damaged or unusually protected PDFs are flagged and skipped.
+
+## Privacy
+
+No server receives the files. Merging uses pdf-lib inside the browser, and the page works offline once loaded.
+
+## En español
+
+PrintAllPDFs es una aplicación web gratuita para imprimir muchos PDF de una vez, pensada para los albaranes B2B de almacenes y tiendas. Une los archivos en el navegador, permite imprimir por lotes de 5, 10 o 20, ordenar por nombre o fecha y añadir relleno para doble cara. Los archivos nunca se suben a ningún servidor. Creada por Jorge Calleja, Diseño Web Málaga.
+
+## Links
+
+- App: https://printallpdfs.vercel.app/
+- Author: https://jorgecalleja.dev

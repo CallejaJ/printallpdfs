@@ -4,15 +4,56 @@ import { LanguageProvider } from "@/lib/i18n";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import MotionProvider from "@/components/MotionProvider";
+import { AUTHOR, GEO, SITE_NAME, SITE_URL } from "@/lib/site";
+import { SEO_DESCRIPTION, SEO_TITLE, structuredData } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "PrintAllPDFs",
-  description:
-    "Merge many PDFs in your browser and print them all through a single print dialog. Files never leave your computer.",
+  metadataBase: new URL(SITE_URL),
+  title: { default: SEO_TITLE, template: `%s | ${SITE_NAME}` },
+  description: SEO_DESCRIPTION,
+  applicationName: SITE_NAME,
+  authors: [{ name: AUTHOR.name, url: AUTHOR.url }],
+  creator: AUTHOR.name,
+  keywords: [
+    "print multiple PDFs",
+    "merge PDF and print",
+    "batch PDF printing",
+    "B2B delivery notes",
+    "imprimir varios PDF",
+    "imprimir albaranes",
+    "unir PDF",
+    "imprimir PDF por lotes",
+    "Málaga",
+  ],
+  alternates: { canonical: "/" },
   icons: {
     icon: "/images/favicon.svg",
     shortcut: "/images/favicon.svg",
     apple: "/images/favicon.svg",
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: SITE_NAME,
+    title: SEO_TITLE,
+    description: SEO_DESCRIPTION,
+    locale: "en_US",
+    alternateLocale: ["es_ES"],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "PrintAllPDFs batch printing queue" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SEO_TITLE,
+    description: SEO_DESCRIPTION,
+    images: ["/og.png"],
+  },
+  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
+  category: "productivity",
+  other: {
+    "geo.region": GEO.region,
+    "geo.placename": GEO.placename,
+    "geo.position": `${GEO.latitude};${GEO.longitude}`,
+    ICBM: `${GEO.latitude}, ${GEO.longitude}`,
   },
 };
 
@@ -29,6 +70,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData()).replace(/</g, "\\u003c") }}
+        />
         <LanguageProvider>
           <MotionProvider>
             <SiteHeader />
