@@ -1,0 +1,14 @@
+{
+  "name": "printallpdfs",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static web app that merges multiple PDFs in the browser and prints them through a single dialog.",
+  "scripts": {
+    "dev": "node tests/server.js",
+    "test": "node --test \"tests/**/*.test.js\""
+  },
+  "devDependencies": {
+    "pdf-lib": "1.17.1",
+    "playwright": "^1.48.0"
+  }
+}

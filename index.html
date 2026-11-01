@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PDFallprint</title>
+<title>PrintAllPDFs</title>
 <style>
   :root {
     --bg: #f6f5f2; --card: #ffffff; --text: #1d1d1b; --muted: #6b6a66;
@@ -52,41 +52,41 @@
 </head>
 <body>
 <main>
-  <h1>PDFallprint</h1>
-  <p class="sub">Imprime muchos PDF de una vez: se unen en tu navegador y salen con un solo diálogo de impresión.</p>
+  <h1>PrintAllPDFs</h1>
+  <p class="sub">Print many PDFs at once: they are merged in your browser and sent through a single print dialog.</p>
 
-  <div id="drop" tabindex="0" role="button" aria-label="Elegir archivos PDF">
-    <strong>Arrastra aquí tus PDF</strong>
-    <span>o haz clic para elegirlos</span>
+  <div id="drop" tabindex="0" role="button" aria-label="Choose PDF files">
+    <strong>Drop your PDFs here</strong>
+    <span>or click to choose them</span>
   </div>
   <input id="file" type="file" accept="application/pdf,.pdf" multiple hidden>
 
   <ul id="list"></ul>
 
   <div class="row">
-    <label>Orden
+    <label>Order
       <select id="sort">
         <option value="manual">Manual</option>
-        <option value="name">Por nombre</option>
-        <option value="date">Por fecha</option>
+        <option value="name">By name</option>
+        <option value="date">By date</option>
       </select>
     </label>
-    <label>Copias <input id="copies" type="number" min="1" max="50" value="1"></label>
-    <label><input id="blank" type="checkbox"> Página en blanco entre documentos impares (para doble cara)</label>
+    <label>Copies <input id="copies" type="number" min="1" max="50" value="1"></label>
+    <label><input id="blank" type="checkbox"> Add a blank page after odd-length documents (for duplex)</label>
   </div>
 
   <div class="actions">
-    <button id="print" class="btn primary" disabled>Imprimir todo</button>
-    <button id="download" class="btn" disabled>Descargar PDF unido</button>
-    <button id="clear" class="btn" disabled>Vaciar lista</button>
+    <button id="print" class="btn primary" disabled>Print all</button>
+    <button id="download" class="btn" disabled>Download merged PDF</button>
+    <button id="clear" class="btn" disabled>Clear list</button>
   </div>
   <div id="status" aria-live="polite"></div>
 
-  <p class="note">Los archivos no salen de tu ordenador: todo se procesa en el navegador.
-    Por seguridad, una web no puede imprimir sin mostrar el diálogo; elige la impresora una vez y se imprimen todos.</p>
+  <p class="note">Your files never leave your computer: everything is processed in the browser.
+    For security reasons, a web page cannot print without showing the dialog; pick the printer once and everything prints.</p>
 </main>
 
-<iframe id="frame" title="Vista de impresión" style="position:fixed;right:0;bottom:0;width:0;height:0;border:0"></iframe>
+<iframe id="frame" title="Print preview" style="position:fixed;right:0;bottom:0;width:0;height:0;border:0"></iframe>
 
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script>window.PDFLib || document.write('<script src="vendor/pdf-lib.min.js"><\/script>');</script>
@@ -108,11 +108,11 @@ async function addFiles(fileList) {
     try {
       const doc = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
       item.pages = doc.getPageCount();
-    } catch (e) { item.error = 'No se puede leer'; }
+    } catch (e) { item.error = 'Unreadable'; }
   }
   applySort();
   render();
-  if (skipped) setStatus(`Se ignoraron ${skipped} archivo(s) que no son PDF.`);
+  if (skipped) setStatus(`Skipped ${skipped} non-PDF file(s).`);
 }
 
 function applySort() {
@@ -128,9 +128,9 @@ function render() {
     const li = document.createElement('li');
     if (it.error) li.className = 'err';
     li.innerHTML = `<span class="n">${i + 1}</span><span class="name"></span>
-      <span class="meta">${it.error ? it.error : (it.pages ?? '…') + ' pág · ' + fmtSize(it.file.size)}</span>
-      <button title="Subir" data-a="up">↑</button><button title="Bajar" data-a="down">↓</button>
-      <button title="Quitar" data-a="del">✕</button>`;
+      <span class="meta">${it.error ? it.error : (it.pages ?? '…') + ' pp · ' + fmtSize(it.file.size)}</span>
+      <button title="Move up" data-a="up">↑</button><button title="Move down" data-a="down">↓</button>
+      <button title="Remove" data-a="del">✕</button>`;
     li.querySelector('.name').textContent = it.file.name;
     li.querySelectorAll('button').forEach(b => b.onclick = () => act(i, b.dataset.a));
     list.appendChild(li);
@@ -139,7 +139,7 @@ function render() {
   const total = ok.reduce((s, i) => s + (i.pages || 0), 0);
   ['print', 'download'].forEach(id => $(id).disabled = ok.length === 0);
   $('clear').disabled = items.length === 0;
-  setStatus(items.length ? `${ok.length} PDF listos · ${total} páginas` : '');
+  setStatus(items.length ? `${ok.length} PDFs ready · ${total} pages` : '');
 }
 
 function act(i, a) {
@@ -177,11 +177,11 @@ async function buildMerged() {
 async function withBusy(fn) {
   ['print', 'download', 'clear'].forEach(id => $(id).disabled = true);
   try { await fn(); } catch (e) { setStatus('Error: ' + e.message); console.error(e); }
-  finally { const s = $('status').textContent; render(); if (s.startsWith('Error') || s.startsWith('Abriendo') || s.startsWith('Descargado')) setStatus(s); }
+  finally { const s = $('status').textContent; render(); if (s.startsWith('Error') || s.startsWith('Opening') || s.startsWith('Downloaded')) setStatus(s); }
 }
 
 $('print').onclick = () => withBusy(async () => {
-  setStatus('Uniendo PDF…');
+  setStatus('Merging PDFs…');
   const { url, pages } = await buildMerged();
   const frame = $('frame');
   frame.onload = () => {
@@ -189,15 +189,15 @@ $('print').onclick = () => withBusy(async () => {
     catch (e) { window.open(url, '_blank'); }
   };
   frame.src = url;
-  setStatus(`Abriendo el diálogo de impresión (${pages} páginas). Si no aparece, usa "Descargar PDF unido".`);
+  setStatus(`Opening the print dialog (${pages} pages). If it does not appear, use "Download merged PDF".`);
 });
 
 $('download').onclick = () => withBusy(async () => {
-  setStatus('Uniendo PDF…');
+  setStatus('Merging PDFs…');
   const { url, pages } = await buildMerged();
   const a = document.createElement('a');
-  a.href = url; a.download = 'pdfallprint-unido.pdf'; a.click();
-  setStatus(`Descargado: ${pages} páginas.`);
+  a.href = url; a.download = 'printallpdfs-merged.pdf'; a.click();
+  setStatus(`Downloaded: ${pages} pages.`);
 });
 
 $('clear').onclick = () => { items = []; render(); };
