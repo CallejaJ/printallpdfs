@@ -1,0 +1,258 @@
+"use client";
+
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
+
+export type Lang = "en" | "es";
+type Str = string | ((...args: never[]) => string) | Record<string, string>;
+
+const en = {
+  legend:
+    "Drop as many PDFs as you need, put them in order and print them all at once. They are merged in your browser into a single document, so you only pick the printer once.",
+  filesTitle: "Files",
+  filesSub: "Add PDFs and arrange the print order.",
+  dropAria: "Choose PDF files",
+  dropTitle: "Drop your PDFs here",
+  dropActive: "Release to add them",
+  dropSub: "or click to browse your computer",
+  dropLimit: "Recommended: up to 500 MB in total. Files are processed in your browser memory.",
+  clear: "Clear list",
+  empty: "No files yet. Your queue will appear here.",
+  queue: (n: number, size: string) => `${n} ${n === 1 ? "file" : "files"} in queue · ${size}`,
+  sizeWarn: (size: string) =>
+    `The queue weighs ${size}. Above 500 MB the browser may slow down or close the tab. Use batches to print it in smaller jobs.`,
+  optionsTitle: "Print options",
+  optionsSub: "Applied to the merged document.",
+  order: "Order",
+  orderManual: "Manual",
+  orderName: "By name",
+  orderDate: "By date",
+  orderHint: {
+    manual: "Drag files by the handle or use the arrows to set your own order.",
+    name: "Alphabetical, with numbers in natural order (2 before 10).",
+    date: "Based on the last modified date of each file.",
+  },
+  dirAsc: { manual: "", name: "A → Z", date: "Oldest first" },
+  dirDesc: { manual: "", name: "Z → A", date: "Newest first" },
+  dirToggle: "Reverse order",
+  batch: "Batches",
+  batchHint: "Split large queues into several smaller print jobs so the printer never gets stuck.",
+  batchAll: "All",
+  batchOf: (n: number) => `${n} per job`,
+  blank: "Duplex padding",
+  blankHint: "Adds a blank page after odd-length documents so each one starts on a new sheet.",
+  copiesTitle: "Copies",
+  copiesInfo: "Set them in the print dialog. The printer repeats the job, so the file does not grow.",
+  statFiles: "PDFs",
+  statPages: "Pages",
+  statTotal: "To print",
+  print: "Print all",
+  printBatch: (i: number, n: number) => `Print batch ${i} of ${n}`,
+  printAgain: "Print again",
+  allPrinted: "All batches sent",
+  batchLabel: (i: number) => `Batch ${i}`,
+  batchMeta: (files: number, pages: number) => `${files} ${files === 1 ? "file" : "files"} · ${pages} pp`,
+  batchSent: "Sent",
+  batchPending: "Pending",
+  download: "Download merged PDF",
+  merging: (done: number, total: number) => `Merging ${done} of ${total}…`,
+  privacy:
+    "Your files never leave your computer. Browsers cannot print without the dialog, so pick the printer once and the whole job prints.",
+  footerBeta: "Beta version",
+  howTitle: "How it works",
+  howSub: "Three steps from a folder full of PDFs to a single print job.",
+  step1Title: "Add your files",
+  step1Body:
+    "Drag the PDFs onto the drop zone or click it to browse. Each file is checked on arrival and shows its page count and size, and anything that is not a valid PDF is flagged so it never reaches the printer.",
+  step2Title: "Set the order and options",
+  step2Body:
+    "Sort by name or date, or drag files into place by hand. Turn on duplex padding if you print on both sides and split long queues into batches. The counters show exactly how many pages will come out.",
+  step3Title: "Print once",
+  step3Body:
+    "Press Print all. The files are merged into one document and the system print dialog opens. Pick the printer, paper, copies and quality a single time and the whole job is sent at once.",
+  helpTitle: "Tips and frequently asked questions",
+  helpSub: "Everything you need to know before printing a large queue.",
+  help1Title: "Why does a dialog appear?",
+  help1Body:
+    "Browsers do not allow a web page to send documents straight to a printer, for security reasons. Merging everything first means you only see that dialog once, no matter how many files you add.",
+  help2Title: "Is there a size limit?",
+  help2Body:
+    "There is no hard limit, but everything is processed in your browser memory. Up to about 500 MB in total works smoothly on a normal computer. For heavy scanned files, use batches so each print job stays small.",
+  help3Title: "What does duplex padding do?",
+  help3Body:
+    "When printing on both sides, a document with an odd number of pages would make the next one start on the back of its last sheet. Padding adds a blank page so every document begins on a fresh sheet.",
+  help4Title: "Are my files uploaded or compressed?",
+  help4Body:
+    "Neither. The PDFs are read and merged locally in your browser and never sent to any server. Pages are copied as they are, so quality and barcodes stay intact.",
+  help5Title: "What if a PDF cannot be read?",
+  help5Body:
+    "Damaged files or files with unusual protection are marked in red and skipped automatically. The rest of the queue still prints normally.",
+  help6Title: "The dialog did not open",
+  help6Body:
+    "Some browsers block printing from an embedded document. Use Download merged PDF instead, open the file and print it from your PDF viewer. The result is exactly the same.",
+  unreadable: "Unreadable",
+  pages: (n: number) => `${n} pp`,
+  skipped: (n: number) => `Skipped ${n} non-PDF file(s).`,
+  opening: (n: number) => `Opening the print dialog (${n} pages). If it does not appear, use "Download merged PDF".`,
+  downloaded: (n: number) => `Downloaded: ${n} pages.`,
+  error: (m: string) => `Error: ${m}`,
+  drag: "Drag to reorder",
+  up: "Move up",
+  down: "Move down",
+  remove: "Remove",
+  themeLight: "Switch to light mode",
+  themeDark: "Switch to dark mode",
+  language: "Language",
+};
+
+export type Key = keyof typeof en;
+
+const es: { [K in Key]: (typeof en)[K] } = {
+  legend:
+    "Arrastra todos los PDF que necesites, ordénalos e imprímelos de una vez. Se unen en tu navegador en un solo documento, así que solo eliges la impresora una vez.",
+  filesTitle: "Archivos",
+  filesSub: "Añade PDF y decide el orden de impresión.",
+  dropAria: "Elegir archivos PDF",
+  dropTitle: "Arrastra aquí tus PDF",
+  dropActive: "Suelta para añadirlos",
+  dropSub: "o haz clic para buscarlos en tu equipo",
+  dropLimit: "Recomendado: hasta 500 MB en total. Los archivos se procesan en la memoria del navegador.",
+  clear: "Vaciar lista",
+  empty: "Todavía no hay archivos. Tu cola aparecerá aquí.",
+  queue: (n, size) => `${n} ${n === 1 ? "archivo" : "archivos"} en cola · ${size}`,
+  sizeWarn: (size) =>
+    `La cola ocupa ${size}. Por encima de 500 MB el navegador puede ir lento o cerrar la pestaña. Usa los lotes para imprimirla en trabajos más pequeños.`,
+  optionsTitle: "Opciones de impresión",
+  optionsSub: "Se aplican al documento unido.",
+  order: "Orden",
+  orderManual: "Manual",
+  orderName: "Por nombre",
+  orderDate: "Por fecha",
+  orderHint: {
+    manual: "Arrastra los archivos por el asa o usa las flechas para decidir tu propio orden.",
+    name: "Alfabético, con los números en orden natural (2 antes que 10).",
+    date: "Según la fecha de última modificación de cada archivo.",
+  },
+  dirAsc: { manual: "", name: "A → Z", date: "Más antiguos primero" },
+  dirDesc: { manual: "", name: "Z → A", date: "Más recientes primero" },
+  dirToggle: "Invertir el orden",
+  batch: "Lotes",
+  batchHint: "Divide las colas grandes en varios trabajos más pequeños para que la impresora no se atasque.",
+  batchAll: "Todo",
+  batchOf: (n) => `${n} por trabajo`,
+  blank: "Relleno para doble cara",
+  blankHint: "Añade una página en blanco tras los documentos impares para que cada uno empiece en hoja nueva.",
+  copiesTitle: "Copias",
+  copiesInfo: "Indícalas en el diálogo de impresión. La impresora repite el trabajo y el archivo no crece.",
+  statFiles: "PDF",
+  statPages: "Páginas",
+  statTotal: "A imprimir",
+  print: "Imprimir todo",
+  printBatch: (i, n) => `Imprimir lote ${i} de ${n}`,
+  printAgain: "Volver a imprimir",
+  allPrinted: "Todos los lotes enviados",
+  batchLabel: (i) => `Lote ${i}`,
+  batchMeta: (files, pages) => `${files} ${files === 1 ? "archivo" : "archivos"} · ${pages} pág`,
+  batchSent: "Enviado",
+  batchPending: "Pendiente",
+  download: "Descargar PDF unido",
+  merging: (done, total) => `Uniendo ${done} de ${total}…`,
+  privacy:
+    "Tus archivos no salen de tu equipo. El navegador no puede imprimir sin el diálogo: eliges la impresora una vez y se imprime todo el trabajo.",
+  footerBeta: "Versión beta",
+  howTitle: "Cómo funciona",
+  howSub: "Tres pasos para pasar de una carpeta llena de PDF a un único trabajo de impresión.",
+  step1Title: "Añade tus archivos",
+  step1Body:
+    "Arrastra los PDF a la zona de carga o haz clic para buscarlos. Cada archivo se comprueba al llegar y muestra sus páginas y su tamaño, y lo que no sea un PDF válido se marca para que nunca llegue a la impresora.",
+  step2Title: "Elige el orden y las opciones",
+  step2Body:
+    "Ordena por nombre o por fecha, o arrastra los archivos a mano. Activa el relleno para doble cara si imprimes por las dos caras y divide las colas largas en lotes. Los contadores muestran exactamente cuántas páginas saldrán.",
+  step3Title: "Imprime una sola vez",
+  step3Body:
+    "Pulsa Imprimir todo. Los archivos se unen en un solo documento y se abre el diálogo de impresión del sistema. Eliges impresora, papel, copias y calidad una vez y todo el trabajo se envía de golpe.",
+  helpTitle: "Consejos y preguntas frecuentes",
+  helpSub: "Todo lo que conviene saber antes de imprimir una cola grande.",
+  help1Title: "¿Por qué aparece un diálogo?",
+  help1Body:
+    "Por seguridad, los navegadores no permiten que una web envíe documentos directamente a la impresora. Al unirlo todo antes, solo ves ese diálogo una vez, da igual cuántos archivos añadas.",
+  help2Title: "¿Hay límite de tamaño?",
+  help2Body:
+    "No hay un límite fijo, pero todo se procesa en la memoria del navegador. Hasta unos 500 MB en total funciona con fluidez en un ordenador normal. Con escaneados pesados, usa los lotes para que cada trabajo de impresión sea pequeño.",
+  help3Title: "¿Qué hace el relleno para doble cara?",
+  help3Body:
+    "Al imprimir por las dos caras, un documento con páginas impares haría que el siguiente empezara en el reverso de su última hoja. El relleno añade una página en blanco para que cada documento empiece en una hoja nueva.",
+  help4Title: "¿Se suben o se comprimen mis archivos?",
+  help4Body:
+    "Ninguna de las dos cosas. Los PDF se leen y se unen en tu navegador y nunca se envían a ningún servidor. Las páginas se copian tal cual, así que la calidad y los códigos de barras quedan intactos.",
+  help5Title: "¿Y si un PDF no se puede leer?",
+  help5Body:
+    "Los archivos dañados o con protecciones poco habituales se marcan en rojo y se omiten automáticamente. El resto de la cola se imprime con normalidad.",
+  help6Title: "No se abrió el diálogo",
+  help6Body:
+    "Algunos navegadores bloquean la impresión desde un documento incrustado. Usa Descargar PDF unido, abre el archivo e imprímelo desde tu visor de PDF. El resultado es exactamente el mismo.",
+  unreadable: "No se puede leer",
+  pages: (n) => `${n} pág`,
+  skipped: (n) => `Se ignoraron ${n} archivo(s) que no son PDF.`,
+  opening: (n) => `Abriendo el diálogo de impresión (${n} páginas). Si no aparece, usa "Descargar PDF unido".`,
+  downloaded: (n) => `Descargado: ${n} páginas.`,
+  error: (m) => `Error: ${m}`,
+  drag: "Arrastra para reordenar",
+  up: "Subir",
+  down: "Bajar",
+  remove: "Quitar",
+  themeLight: "Activar modo claro",
+  themeDark: "Activar modo oscuro",
+  language: "Idioma",
+};
+
+export const STRINGS = { en, es };
+
+type Dict = typeof en;
+type Args<K extends Key> = Dict[K] extends (...a: infer A) => string ? A : [];
+
+interface LangContext {
+  lang: Lang;
+  setLang: (l: Lang) => void;
+  t: <K extends Key>(key: K, ...args: Args<K>) => string;
+  dict: Dict;
+}
+
+const Ctx = createContext<LangContext | null>(null);
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [lang, setLangState] = useState<Lang>("en");
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("lang") === "es") setLangState("es");
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  const setLang = useCallback((l: Lang) => {
+    setLangState(l);
+    try {
+      localStorage.setItem("lang", l);
+    } catch {}
+  }, []);
+
+  const dict = STRINGS[lang] as Dict;
+  const t = useCallback(
+    <K extends Key>(key: K, ...args: Args<K>): string => {
+      const v = dict[key] as Str;
+      return typeof v === "function" ? (v as (...a: unknown[]) => string)(...args) : (v as string);
+    },
+    [dict],
+  );
+
+  return <Ctx.Provider value={{ lang, setLang, t, dict }}>{children}</Ctx.Provider>;
+}
+
+export function useLang(): LangContext {
+  const ctx = useContext(Ctx);
+  if (!ctx) throw new Error("useLang must be used inside LanguageProvider");
+  return ctx;
+}

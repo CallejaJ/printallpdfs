@@ -1,14 +1,30 @@
 {
   "name": "printallpdfs",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "Static web app that merges multiple PDFs in the browser and prints them through a single dialog.",
+  "description": "Web app that merges multiple PDFs in the browser and prints them through a single dialog.",
   "scripts": {
-    "dev": "node tests/server.js",
-    "test": "node --test \"tests/**/*.test.js\""
+    "dev": "next dev",
+    "build": "next build",
+    "start": "node tests/server.js",
+    "test": "jest",
+    "test:e2e": "node --test \"tests/e2e/**/*.test.js\""
+  },
+  "dependencies": {
+    "motion": "^12.23.0",
+    "next": "^16.3.6",
+    "pdf-lib": "1.17.1",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "devDependencies": {
-    "pdf-lib": "1.17.1",
-    "playwright": "^1.48.0"
+    "@types/jest": "^30.0.0",
+    "@types/node": "20.14.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "jest": "^30.5.2",
+    "playwright": "^1.48.0",
+    "ts-jest": "^29.4.14",
+    "typescript": "5.5.3"
   }
 }
