@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg0:#1a2744;--bg1:#0f172a;--teal:#2dd4bf;--teal2:#14b8a6;--blue:#4f9dff;--white:#f1f5f9;--gray:#94a3b8;--panel:#111c2e;--line:#22314a}
+*{box-sizing:border-box;margin:0}
+body{width:1200px;height:1200px;background:radial-gradient(ellipse 70% 60% at 50% 40%,var(--bg0),var(--bg1));font-family:Inter,sans-serif;color:var(--white);position:relative;overflow:hidden}
+body::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(148,163,184,.10) 1.2px,transparent 1.6px);background-size:22px 22px}
+.c{position:absolute;left:72px;right:72px}
+.kicker{top:84px;font-family:'JetBrains Mono';font-size:20px;letter-spacing:5px;color:var(--teal)}
+h1{top:132px;font-family:'Archivo Black';font-size:84px;line-height:1.02;font-weight:400}
+h1 span{color:var(--blue)}
+.sub{top:330px;font-size:26px;color:var(--gray)}
+.win{top:400px;height:500px;background:#e2e2e8;border:1px solid #c9c9d4;border-radius:22px;box-shadow:0 10px 28px rgba(0,0,0,.4);padding:0 12px 12px}
+.bar{height:62px;display:flex;align-items:center;gap:9px;padding-left:16px}
+.dot{width:14px;height:14px;border-radius:50%}
+.url{margin-left:150px;width:540px;height:36px;background:#fff;border-radius:18px;display:flex;align-items:center;justify-content:center;gap:8px;color:#3f3f46;font-size:16px}
+.app{height:calc(100% - 62px);background:var(--panel);border:1px solid #1e2b42;border-radius:12px;padding:22px 24px;display:grid;grid-template-columns:1.35fr 1fr;gap:22px}
+.lab{font-family:'JetBrains Mono';font-size:13px;letter-spacing:3px;color:var(--gray);margin-bottom:14px}
+.file{display:grid;grid-template-columns:22px 22px 1fr auto;gap:12px;align-items:center;padding:11px 14px;margin-bottom:9px;background:#18253b;border:1px solid var(--line);border-radius:10px;font-size:16px}
+.file .n{color:var(--gray);font-size:13px;text-align:right}
+.file .m{color:var(--gray);font-size:13px}
+.file svg{color:var(--teal)}
+.more{color:var(--gray);font-size:14px;text-align:center;padding-top:4px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.st{background:#18253b;border:1px solid var(--line);border-radius:10px;text-align:center;padding:14px 0}
+.st b{display:block;font-size:30px;color:var(--teal);font-weight:700}
+.st span{font-size:12px;color:var(--gray)}
+.opt{display:flex;justify-content:space-between;align-items:center;font-size:15px;padding:10px 0;border-top:1px solid var(--line);color:#cbd5e1}
+.sw{width:40px;height:22px;border-radius:999px;background:var(--teal2);position:relative}
+.sw::after{content:"";position:absolute;right:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff}
+.pill{font-family:'JetBrains Mono';font-size:14px;color:var(--white)}
+.btn{margin-top:14px;height:56px;border-radius:999px;background:linear-gradient(135deg,var(--teal2),var(--teal));color:#042f2e;font-weight:700;font-size:19px;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 12px 26px -12px rgba(45,212,191,.6)}
+.tags{top:940px;font-size:17px;letter-spacing:3.2px;color:var(--gray);font-weight:500}
+.foot{top:1010px;border-top:1px solid #22314a;padding-top:34px;display:flex;align-items:center;gap:18px}
+.foot img{width:54px;height:54px}
+.brand b{display:block;font-size:24px;font-weight:700}
+.brand b span{color:var(--teal)}
+.brand small{font-size:16px;color:var(--gray)}
+.foot .site{margin-left:auto;font-size:19px;color:#cbd5e1}
+.free{margin-left:40px;background:var(--teal);color:#042f2e;font-weight:700;font-size:19px;padding:13px 52px;border-radius:999px}
+</style></head><body>
+<div class="c kicker">¿20 PDF QUE IMPRIMIR?</div>
+<h1 class="c">Muchos PDF,<br><span>un solo clic</span>.</h1>
+<p class="c sub">Arrastra, ordena e imprime todos tus PDF de una vez. Sin subir nada.</p>
+
+<div class="c win">
+  <div class="bar"><i class="dot" style="background:#ff5f57"></i><i class="dot" style="background:#febc2e"></i><i class="dot" style="background:#28c840"></i>
+    <div class="url"><svg width="14" height="14" viewBox="0 0 24 24" fill="#71717a"><path d="M6 10V7a6 6 0 0 1 12 0v3h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1zm2 0h8V7a4 4 0 0 0-8 0z"/></svg>printallpdfs.vercel.app</div></div>
+  <div class="app">
+    <div>
+      <div class="lab">COLA DE IMPRESIÓN</div>
+      <div class="file"><span class="n">1</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span>factura_enero.pdf</span><span class="m">2 pág</span></div>
+      <div class="file"><span class="n">2</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span>factura_febrero.pdf</span><span class="m">3 pág</span></div>
+      <div class="file"><span class="n">3</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span>albaran_0342.pdf</span><span class="m">1 pág</span></div>
+      <div class="file"><span class="n">4</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><span>contrato_firmado.pdf</span><span class="m">6 pág</span></div>
+      <div class="more">+ 16 archivos más</div>
+    </div>
+    <div>
+      <div class="lab">OPCIONES</div>
+      <div class="stats"><div class="st"><b>20</b><span>PDF</span></div><div class="st"><b>64</b><span>Páginas</span></div><div class="st"><b>70</b><span>A imprimir</span></div></div>
+      <div class="opt">Orden <span class="pill">Por nombre</span></div>
+      <div class="opt">Copias <span class="pill">1</span></div>
+      <div class="opt">Doble cara <i class="sw"></i></div>
+      <div class="btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg>Imprimir todo</div>
+    </div>
+  </div>
+</div>
+
+<div class="c tags">UN SOLO DIÁLOGO · ORDEN Y COPIAS · DOBLE CARA · NADA SE SUBE · GRATIS</div>
+<div class="c foot">
+  <img src="../images/favicon.svg" alt="">
+  <div class="brand"><b>PrintAll<span>PDFs</span></b><small>Imprime muchos PDF de una vez</small></div>
+  <span class="site">printallpdfs.vercel.app</span>
+  <span class="free">Gratis</span>
+</div>
+</body></html>
