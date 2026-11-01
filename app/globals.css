@@ -94,7 +94,7 @@ main {
 }
 
 .header-inner {
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -226,7 +226,7 @@ html[data-theme="light"] .beta-badge {
 
 .page-intro {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 16px 40px 0;
 }
@@ -274,7 +274,7 @@ html[data-theme="light"] .beta-badge {
 /* Layout */
 .wrap {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 24px 40px 64px;
 }
