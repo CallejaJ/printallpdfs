@@ -42,6 +42,7 @@
         <svg class="drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 17v-6M9 14l3-3 3 3"/></svg>
         <strong data-i18n="dropTitle"></strong>
         <span data-i18n="dropSub"></span>
+        <small class="drop-limit" data-i18n="dropLimit"></small>
       </div>
       <input id="file" type="file" accept="application/pdf,.pdf" multiple hidden>
 
@@ -82,6 +83,11 @@
         <div class="stat"><b id="statSheets">0</b><span data-i18n="statTotal"></span></div>
       </div>
 
+      <div id="sizeWarn" class="size-warn" role="alert" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>
+        <span id="sizeWarnText"></span>
+      </div>
+
       <div class="actions">
         <button id="print" class="primary" type="button" disabled>
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg>
@@ -100,6 +106,41 @@
       </div>
     </aside>
   </div>
+
+  <section class="how" aria-labelledby="howTitle">
+    <h2 id="howTitle" class="section-title" data-i18n="howTitle"></h2>
+    <p class="section-sub" data-i18n="howSub"></p>
+    <div class="steps">
+      <article class="step">
+        <span class="step-num">1</span>
+        <h3 data-i18n="step1Title"></h3>
+        <p data-i18n="step1Body"></p>
+      </article>
+      <article class="step">
+        <span class="step-num">2</span>
+        <h3 data-i18n="step2Title"></h3>
+        <p data-i18n="step2Body"></p>
+      </article>
+      <article class="step">
+        <span class="step-num">3</span>
+        <h3 data-i18n="step3Title"></h3>
+        <p data-i18n="step3Body"></p>
+      </article>
+    </div>
+  </section>
+
+  <section class="panel help" aria-labelledby="helpTitle">
+    <h2 id="helpTitle" data-i18n="helpTitle"></h2>
+    <p class="panel-sub" data-i18n="helpSub"></p>
+    <div class="help-grid">
+        <p><b data-i18n="help1Title"></b> <span data-i18n="help1Body"></span></p>
+        <p><b data-i18n="help2Title"></b> <span data-i18n="help2Body"></span></p>
+        <p><b data-i18n="help3Title"></b> <span data-i18n="help3Body"></span></p>
+        <p><b data-i18n="help4Title"></b> <span data-i18n="help4Body"></span></p>
+        <p><b data-i18n="help5Title"></b> <span data-i18n="help5Body"></span></p>
+        <p><b data-i18n="help6Title"></b> <span data-i18n="help6Body"></span></p>
+    </div>
+  </section>
 </main>
 
 <footer class="site-footer">

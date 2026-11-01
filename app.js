@@ -13,9 +13,11 @@
       dropAria: 'Choose PDF files',
       dropTitle: 'Drop your PDFs here',
       dropSub: 'or click to browse your computer',
+      dropLimit: 'Recommended: up to 500 MB in total. Files are processed in your browser memory.',
       clear: 'Clear list',
       empty: 'No files yet',
-      queue: (n) => `${n} ${n === 1 ? 'file' : 'files'} in queue`,
+      queue: (n, size) => `${n} ${n === 1 ? 'file' : 'files'} in queue · ${size}`,
+      sizeWarn: (size) => `The batch weighs ${size}. Above 500 MB the browser may slow down or close the tab. Consider printing in smaller groups.`,
       optionsTitle: 'Print options',
       optionsSub: 'Applied to the merged document.',
       order: 'Order',
@@ -32,6 +34,28 @@
       download: 'Download merged PDF',
       privacy: 'Your files never leave your computer. Browsers cannot print without the dialog, so pick the printer once and the whole batch prints.',
       footerBeta: 'Beta version',
+      howTitle: "How it works",
+      howSub: "Three steps from a folder full of PDFs to a single print job.",
+      step1Title: "Add your files",
+      step1Body: "Drag the PDFs onto the drop zone or click it to browse. Each file is checked on arrival and shows its page count and size, and anything that is not a valid PDF is flagged so it never reaches the printer.",
+      step2Title: "Set the order and options",
+      step2Body: "Sort by name or date, or move files up and down by hand. Choose how many copies you need and turn on duplex padding if you print on both sides. The counters show exactly how many pages will come out.",
+      step3Title: "Print once",
+      step3Body: "Press Print all. The files are merged into one document and the system print dialog opens. Pick the printer, paper and quality a single time and the whole batch is sent as one job.",
+      helpTitle: "Tips and frequently asked questions",
+      helpSub: "Everything you need to know before printing a large batch.",
+      help1Title: "Why does a dialog appear?",
+      help1Body: "Browsers do not allow a web page to send documents straight to a printer, for security reasons. Merging everything first means you only see that dialog once, no matter how many files you add.",
+      help2Title: "Is there a size limit?",
+      help2Body: "There is no hard limit, but everything is processed in your browser memory. Up to about 500 MB in total works smoothly on a normal computer. Above that, the tab can slow down or close, so split very large batches into smaller groups.",
+      help3Title: "What does duplex padding do?",
+      help3Body: "When printing on both sides, a document with an odd number of pages would make the next one start on the back of its last sheet. Padding adds a blank page so every document begins on a fresh sheet.",
+      help4Title: "Are my files uploaded?",
+      help4Body: "No. The PDFs are read and merged locally in your browser and are never sent to any server. You can even use the app without an internet connection once the page has loaded.",
+      help5Title: "What if a PDF cannot be read?",
+      help5Body: "Damaged files or files with unusual protection are marked in red and skipped automatically. The rest of the batch still prints normally.",
+      help6Title: "The dialog did not open",
+      help6Body: "Some browsers block printing from an embedded document. Use Download merged PDF instead, open the file and print it from your PDF viewer. The result is exactly the same.",
       unreadable: 'Unreadable',
       pages: (n) => `${n} pp`,
       skipped: (n) => `Skipped ${n} non-PDF file(s).`,
@@ -52,9 +76,11 @@
       dropAria: 'Elegir archivos PDF',
       dropTitle: 'Arrastra aquí tus PDF',
       dropSub: 'o haz clic para buscarlos en tu equipo',
+      dropLimit: 'Recomendado: hasta 500 MB en total. Los archivos se procesan en la memoria del navegador.',
       clear: 'Vaciar lista',
       empty: 'Todavía no hay archivos',
-      queue: (n) => `${n} ${n === 1 ? 'archivo' : 'archivos'} en cola`,
+      queue: (n, size) => `${n} ${n === 1 ? 'archivo' : 'archivos'} en cola · ${size}`,
+      sizeWarn: (size) => `El lote ocupa ${size}. Por encima de 500 MB el navegador puede ir lento o cerrar la pestaña. Mejor imprimir en grupos más pequeños.`,
       optionsTitle: 'Opciones de impresión',
       optionsSub: 'Se aplican al documento unido.',
       order: 'Orden',
@@ -71,6 +97,28 @@
       download: 'Descargar PDF unido',
       privacy: 'Tus archivos no salen de tu equipo. El navegador no puede imprimir sin el diálogo: eliges la impresora una vez y se imprime todo el lote.',
       footerBeta: 'Versión beta',
+      howTitle: "Cómo funciona",
+      howSub: "Tres pasos para pasar de una carpeta llena de PDF a un único trabajo de impresión.",
+      step1Title: "Añade tus archivos",
+      step1Body: "Arrastra los PDF a la zona de carga o haz clic para buscarlos. Cada archivo se comprueba al llegar y muestra sus páginas y su tamaño, y lo que no sea un PDF válido se marca para que nunca llegue a la impresora.",
+      step2Title: "Elige el orden y las opciones",
+      step2Body: "Ordena por nombre o por fecha, o sube y baja los archivos a mano. Indica cuántas copias necesitas y activa el relleno para doble cara si imprimes por las dos caras. Los contadores muestran exactamente cuántas páginas saldrán.",
+      step3Title: "Imprime una sola vez",
+      step3Body: "Pulsa Imprimir todo. Los archivos se unen en un solo documento y se abre el diálogo de impresión del sistema. Eliges impresora, papel y calidad una vez y todo el lote se envía como un único trabajo.",
+      helpTitle: "Consejos y preguntas frecuentes",
+      helpSub: "Todo lo que conviene saber antes de imprimir un lote grande.",
+      help1Title: "¿Por qué aparece un diálogo?",
+      help1Body: "Por seguridad, los navegadores no permiten que una web envíe documentos directamente a la impresora. Al unirlo todo antes, solo ves ese diálogo una vez, da igual cuántos archivos añadas.",
+      help2Title: "¿Hay límite de tamaño?",
+      help2Body: "No hay un límite fijo, pero todo se procesa en la memoria del navegador. Hasta unos 500 MB en total funciona con fluidez en un ordenador normal. Por encima, la pestaña puede ir lenta o cerrarse, así que divide los lotes muy grandes en grupos más pequeños.",
+      help3Title: "¿Qué hace el relleno para doble cara?",
+      help3Body: "Al imprimir por las dos caras, un documento con páginas impares haría que el siguiente empezara en el reverso de su última hoja. El relleno añade una página en blanco para que cada documento empiece en una hoja nueva.",
+      help4Title: "¿Se suben mis archivos?",
+      help4Body: "No. Los PDF se leen y se unen en tu navegador y nunca se envían a ningún servidor. Incluso puedes usar la aplicación sin conexión una vez cargada la página.",
+      help5Title: "¿Y si un PDF no se puede leer?",
+      help5Body: "Los archivos dañados o con protecciones poco habituales se marcan en rojo y se omiten automáticamente. El resto del lote se imprime con normalidad.",
+      help6Title: "No se abrió el diálogo",
+      help6Body: "Algunos navegadores bloquean la impresión desde un documento incrustado. Usa Descargar PDF unido, abre el archivo e imprímelo desde tu visor de PDF. El resultado es exactamente el mismo.",
       unreadable: 'No se puede leer',
       pages: (n) => `${n} pág`,
       skipped: (n) => `Se ignoraron ${n} archivo(s) que no son PDF.`,
@@ -147,8 +195,9 @@
   let items = []; // { file, pages, error }
   let lastUrl = null;
   let busy = false;
+  const SIZE_WARN_BYTES = 500 * 1024 * 1024;
 
-  const fmtSize = (b) => (b < 1048576 ? (b / 1024).toFixed(0) + ' KB' : (b / 1048576).toFixed(1) + ' MB');
+  const fmtSize = (b) => (b < 1048576 ? (b / 1024).toFixed(0) + ' KB' : b < 1073741824 ? (b / 1048576).toFixed(1) + ' MB' : (b / 1073741824).toFixed(2) + ' GB');
   const FILE_ICON = '<svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>';
 
   async function addFiles(fileList) {
@@ -181,7 +230,8 @@
     const pages = ok.reduce((s, i) => s + (i.pages || 0), 0);
     const padded = ok.reduce((s, i) => s + (i.pages || 0) + ($('blank').checked && i.pages % 2 === 1 ? 1 : 0), 0);
     const copies = Math.max(1, Math.min(50, parseInt($('copies').value, 10) || 1));
-    return { ok, pages, toPrint: padded * copies };
+    const bytes = ok.reduce((s, i) => s + i.file.size, 0);
+    return { ok, pages, bytes, toPrint: padded * copies };
   }
 
   function render() {
@@ -210,8 +260,10 @@
       list.appendChild(li);
     });
 
-    const { ok, pages, toPrint } = totals();
-    $('queueCount').textContent = t('queue', items.length);
+    const { ok, pages, bytes, toPrint } = totals();
+    $('queueCount').textContent = t('queue', items.length, fmtSize(bytes));
+    $('sizeWarn').hidden = bytes <= SIZE_WARN_BYTES;
+    $('sizeWarnText').textContent = t('sizeWarn', fmtSize(bytes));
     $('statFiles').textContent = ok.length;
     $('statPages').textContent = pages;
     $('statSheets').textContent = toPrint;

@@ -35,6 +35,7 @@ Files are added by drag and drop or the file picker and kept in an in-memory `it
 | **Unreadable files** | Marked as "Unreadable" and excluded from the merge |
 | **Ordering** | Manual (up/down buttons), by name (numeric-aware `localeCompare`), or by last-modified date |
 | **Removal** | Per-file remove button and a "Clear list" action |
+| **Size guidance** | Shows the total batch size and warns above 500 MB (`SIZE_WARN_BYTES`), since merging happens in browser memory |
 
 ## Merge Engine
 
@@ -52,6 +53,7 @@ The `buildMerged` function creates a new `PDFDocument`, copies every page from e
 | **`index.html`** | Page markup with sticky glass header, two-panel layout and footer |
 | **`styles.css`** | Design tokens for dark and light themes, layout and component styles |
 | **`app.js`** | Queue management, i18n, theme switching and the merge and print flow |
+| **How it works and FAQ sections** | In-page guide with three steps and six answers on limits, duplex, privacy and fallbacks |
 | **`images/`** | `favicon.svg` and `logo.svg` brand assets |
 | **pdf-lib** | Parses and merges PDFs entirely in the browser |
 | **`vendor/pdf-lib.min.js`** | Local fallback loaded when the jsDelivr CDN is unreachable |
