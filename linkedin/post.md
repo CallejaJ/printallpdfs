@@ -1,19 +1,19 @@
 Imagina esto.
 
-Tienes 20 facturas, albaranes y contratos en PDF que imprimir. Abres el primero, Ctrl+P, eliges impresora, aceptas. Abres el segundo… y así hasta veinte.
+Son las 7 de la mañana en el almacén. Tienes 20 albaranes en PDF, uno por cada tienda que hay que servir hoy. Abres el primero, Ctrl+P, eliges impresora, aceptas. Abres el segundo… y así hasta veinte. Y si te saltas uno, una tienda se queda sin su albarán y el camión ya ha salido.
 
-Ya no.
+Ese era nuestro punto de dolor con los albaranes B2B.
 
-He creado PrintAllPDFs: arrastras todos los PDF a la página, los ordenas por nombre, por fecha o a mano, y pulsas "Imprimir todo". Se unen en un solo documento y eliges la impresora UNA vez.
+Así que hemos creado PrintAllPDFs: arrastras todos los albaranes del día, los ordenas por tienda o por fecha, y pulsas "Imprimir todo". Se unen en un solo documento y eliges la impresora UNA vez.
 
-Y con los detalles que importan: copias, relleno para doble cara (cada documento empieza en hoja nueva) y el recuento exacto de páginas antes de imprimir.
+Antes de imprimir ves cuántos albaranes y cuántas páginas van a salir, así que nadie se queda fuera. Y si imprimís a doble cara, cada albarán empieza en hoja nueva para que no se mezclen al separarlos.
 
-Lo mejor: tus archivos no se suben a ningún servidor. Todo pasa dentro de tu navegador.
+Lo mejor: los albaranes no se suben a ningún servidor. Todo pasa dentro de tu navegador.
 
-Detalles pequeños que ahorran mucho tiempo.
+Detalles pequeños que evitan sustos grandes.
 
 👉 printallpdfs.vercel.app
 
-¿Cuántos PDF imprimes a la semana? 👇
+¿Cuántos albaranes imprimís cada mañana? 👇
 
-#productividad #oficina #pdf #desarrolloweb
+#logística #almacén #retail #b2b #albaranes
