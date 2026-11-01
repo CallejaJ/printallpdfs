@@ -1,0 +1,27 @@
+# ProjectName
+
+> One-paragraph summary: what it is, who it is for, and the key constraint (free, private, local, beta).
+
+ProjectName is made by Jorge Calleja (Diseño Web Málaga, Andalucía, Spain). It is in public beta and free to use. The interface is available in English and Spanish.
+
+## What it does
+
+- Capability one.
+- Capability two.
+
+## Limits
+
+- Known limit and why.
+
+## Privacy
+
+What data is sent where, or that nothing leaves the browser.
+
+## En español
+
+Resumen en español de un párrafo.
+
+## Links
+
+- App: https://project-name.vercel.app/
+- Author: https://jorgecalleja.dev
