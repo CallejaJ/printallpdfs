@@ -4,214 +4,112 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PrintAllPDFs</title>
-<style>
-  :root {
-    --bg: #f6f5f2; --card: #ffffff; --text: #1d1d1b; --muted: #6b6a66;
-    --line: #e2e0da; --accent: #2f5bd3; --accent-text: #fff; --danger: #c0392b; --drop: #eef2fd;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #151514; --card: #1f1f1d; --text: #ecebe7; --muted: #9c9a94;
-      --line: #33322f; --accent: #6d8ff0; --accent-text: #0d0d0c; --danger: #ef6b5b; --drop: #1d2438;
-    }
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text);
-    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
-  h1 { font-size: 1.6rem; margin: 0 0 4px; }
-  .sub { color: var(--muted); margin: 0 0 24px; }
-  #drop { border: 2px dashed var(--line); border-radius: 12px; background: var(--card);
-    padding: 36px 16px; text-align: center; cursor: pointer; transition: .15s; }
-  #drop.over { border-color: var(--accent); background: var(--drop); }
-  #drop strong { display: block; font-size: 1.1rem; }
-  #drop span { color: var(--muted); font-size: .9rem; }
-  ul { list-style: none; padding: 0; margin: 20px 0; }
-  li { display: flex; align-items: center; gap: 8px; background: var(--card);
-    border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; }
-  li .n { color: var(--muted); width: 1.6em; text-align: right; font-variant-numeric: tabular-nums; }
-  li .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  li .meta { color: var(--muted); font-size: .85rem; white-space: nowrap; }
-  li.err .meta { color: var(--danger); }
-  li button { background: none; border: 1px solid var(--line); color: var(--text);
-    border-radius: 6px; width: 30px; height: 30px; cursor: pointer; }
-  li button:hover { border-color: var(--accent); }
-  .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 16px 0; }
-  label { color: var(--muted); font-size: .95rem; }
-  input[type=number], select { background: var(--card); color: var(--text); border: 1px solid var(--line);
-    border-radius: 6px; padding: 6px 8px; font: inherit; width: 5em; }
-  select { width: auto; }
-  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
-  .btn { border: 1px solid var(--line); background: var(--card); color: var(--text);
-    border-radius: 8px; padding: 10px 16px; font: inherit; cursor: pointer; }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); font-weight: 600; }
-  .btn:disabled { opacity: .45; cursor: not-allowed; }
-  #status { margin-top: 16px; color: var(--muted); min-height: 1.5em; }
-  .note { margin-top: 32px; font-size: .85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
-</style>
+<meta name="description" content="Merge many PDFs in your browser and print them all through a single print dialog. Files never leave your computer.">
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="images/favicon.svg">
+<meta name="theme-color" content="#0f172a">
+<script>(function(){try{var t=localStorage.getItem('theme');if(t!=='light'&&t!=='dark'){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='dark';}})();</script>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<main>
-  <h1>PrintAllPDFs</h1>
-  <p class="sub">Print many PDFs at once: they are merged in your browser and sent through a single print dialog.</p>
-
-  <div id="drop" tabindex="0" role="button" aria-label="Choose PDF files">
-    <strong>Drop your PDFs here</strong>
-    <span>or click to choose them</span>
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand-row">
+      <img class="brand-logo" src="images/logo.svg" alt="PrintAllPDFs">
+      <span class="header-title">PrintAll<span class="header-title-accent">PDFs</span></span>
+      <span class="beta-badge">Beta</span>
+    </div>
+    <div class="header-actions">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button class="lang-btn" data-lang="es" type="button">ES</button>
+        <button class="lang-btn" data-lang="en" type="button">EN</button>
+      </div>
+      <button id="theme" class="theme-toggle" type="button"></button>
+    </div>
   </div>
-  <input id="file" type="file" accept="application/pdf,.pdf" multiple hidden>
+</header>
+<div class="page-intro">
+  <p class="header-legend" data-i18n="legend"></p>
+</div>
 
-  <ul id="list"></ul>
+<main class="wrap">
+  <div class="grid">
+    <section class="panel">
+      <h2 data-i18n="filesTitle"></h2>
+      <p class="panel-sub" data-i18n="filesSub"></p>
 
-  <div class="row">
-    <label>Order
-      <select id="sort">
-        <option value="manual">Manual</option>
-        <option value="name">By name</option>
-        <option value="date">By date</option>
-      </select>
-    </label>
-    <label>Copies <input id="copies" type="number" min="1" max="50" value="1"></label>
-    <label><input id="blank" type="checkbox"> Add a blank page after odd-length documents (for duplex)</label>
+      <div id="drop" tabindex="0" role="button" data-i18n-aria="dropAria">
+        <svg class="drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M12 17v-6M9 14l3-3 3 3"/></svg>
+        <strong data-i18n="dropTitle"></strong>
+        <span data-i18n="dropSub"></span>
+      </div>
+      <input id="file" type="file" accept="application/pdf,.pdf" multiple hidden>
+
+      <div class="queue-head">
+        <span id="queueCount"></span>
+        <button id="clear" class="link" type="button" data-i18n="clear" disabled></button>
+      </div>
+      <ul id="list"></ul>
+    </section>
+
+    <aside class="panel">
+      <h2 data-i18n="optionsTitle"></h2>
+      <p class="panel-sub" data-i18n="optionsSub"></p>
+
+      <div class="field-pair">
+        <div class="field">
+          <label for="sort" data-i18n="order"></label>
+          <select id="sort">
+            <option value="manual" data-i18n="orderManual"></option>
+            <option value="name" data-i18n="orderName"></option>
+            <option value="date" data-i18n="orderDate"></option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="copies" data-i18n="copies"></label>
+          <input id="copies" type="number" min="1" max="50" value="1">
+        </div>
+      </div>
+
+      <label class="switch">
+        <input id="blank" type="checkbox">
+        <span><span data-i18n="blank"></span><small data-i18n="blankHint"></small></span>
+      </label>
+
+      <div class="summary">
+        <div class="stat"><b id="statFiles">0</b><span data-i18n="statFiles"></span></div>
+        <div class="stat"><b id="statPages">0</b><span data-i18n="statPages"></span></div>
+        <div class="stat"><b id="statSheets">0</b><span data-i18n="statTotal"></span></div>
+      </div>
+
+      <div class="actions">
+        <button id="print" class="primary" type="button" disabled>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg>
+          <span data-i18n="print"></span>
+        </button>
+        <button id="download" class="secondary" type="button" disabled>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+          <span data-i18n="download"></span>
+        </button>
+      </div>
+      <p id="status" aria-live="polite"></p>
+
+      <div class="privacy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+        <span data-i18n="privacy"></span>
+      </div>
+    </aside>
   </div>
-
-  <div class="actions">
-    <button id="print" class="btn primary" disabled>Print all</button>
-    <button id="download" class="btn" disabled>Download merged PDF</button>
-    <button id="clear" class="btn" disabled>Clear list</button>
-  </div>
-  <div id="status" aria-live="polite"></div>
-
-  <p class="note">Your files never leave your computer: everything is processed in the browser.
-    For security reasons, a web page cannot print without showing the dialog; pick the printer once and everything prints.</p>
 </main>
 
-<iframe id="frame" title="Print preview" style="position:fixed;right:0;bottom:0;width:0;height:0;border:0"></iframe>
+<footer class="site-footer">
+  <span>© <span id="year"></span> · <a href="https://jorgecalleja.dev" target="_blank" rel="noopener noreferrer">Diseño Web Málaga</a> · v1.0.0 · <span data-i18n="footerBeta"></span></span>
+</footer>
+
+<iframe id="frame" title="Print preview" aria-hidden="true" tabindex="-1"></iframe>
 
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script>window.PDFLib || document.write('<script src="vendor/pdf-lib.min.js"><\/script>');</script>
-<script>
-const { PDFDocument } = PDFLib;
-const $ = id => document.getElementById(id);
-let items = []; // { file, pages, error }
-let lastUrl = null;
-
-const fmtSize = b => b < 1048576 ? (b / 1024).toFixed(0) + ' KB' : (b / 1048576).toFixed(1) + ' MB';
-const setStatus = t => $('status').textContent = t;
-
-async function addFiles(fileList) {
-  const pdfs = [...fileList].filter(f => f.type === 'application/pdf' || /\.pdf$/i.test(f.name));
-  const skipped = fileList.length - pdfs.length;
-  for (const file of pdfs) {
-    const item = { file, pages: null, error: null };
-    items.push(item);
-    try {
-      const doc = await PDFDocument.load(await file.arrayBuffer(), { ignoreEncryption: true });
-      item.pages = doc.getPageCount();
-    } catch (e) { item.error = 'Unreadable'; }
-  }
-  applySort();
-  render();
-  if (skipped) setStatus(`Skipped ${skipped} non-PDF file(s).`);
-}
-
-function applySort() {
-  const mode = $('sort').value;
-  if (mode === 'name') items.sort((a, b) => a.file.name.localeCompare(b.file.name, 'es', { numeric: true }));
-  if (mode === 'date') items.sort((a, b) => a.file.lastModified - b.file.lastModified);
-}
-
-function render() {
-  const list = $('list');
-  list.innerHTML = '';
-  items.forEach((it, i) => {
-    const li = document.createElement('li');
-    if (it.error) li.className = 'err';
-    li.innerHTML = `<span class="n">${i + 1}</span><span class="name"></span>
-      <span class="meta">${it.error ? it.error : (it.pages ?? '…') + ' pp · ' + fmtSize(it.file.size)}</span>
-      <button title="Move up" data-a="up">↑</button><button title="Move down" data-a="down">↓</button>
-      <button title="Remove" data-a="del">✕</button>`;
-    li.querySelector('.name').textContent = it.file.name;
-    li.querySelectorAll('button').forEach(b => b.onclick = () => act(i, b.dataset.a));
-    list.appendChild(li);
-  });
-  const ok = items.filter(i => !i.error);
-  const total = ok.reduce((s, i) => s + (i.pages || 0), 0);
-  ['print', 'download'].forEach(id => $(id).disabled = ok.length === 0);
-  $('clear').disabled = items.length === 0;
-  setStatus(items.length ? `${ok.length} PDFs ready · ${total} pages` : '');
-}
-
-function act(i, a) {
-  if (a === 'del') items.splice(i, 1);
-  if (a === 'up' && i > 0) [items[i - 1], items[i]] = [items[i], items[i - 1]];
-  if (a === 'down' && i < items.length - 1) [items[i + 1], items[i]] = [items[i], items[i + 1]];
-  if (a !== 'del') $('sort').value = 'manual';
-  render();
-}
-
-async function buildMerged() {
-  const out = await PDFDocument.create();
-  const copies = Math.max(1, Math.min(50, parseInt($('copies').value) || 1));
-  const padBlank = $('blank').checked;
-  const sources = [];
-  for (const it of items.filter(i => !i.error)) {
-    sources.push(await PDFDocument.load(await it.file.arrayBuffer(), { ignoreEncryption: true }));
-  }
-  for (let c = 0; c < copies; c++) {
-    for (const src of sources) {
-      const pages = await out.copyPages(src, src.getPageIndices());
-      pages.forEach(p => out.addPage(p));
-      if (padBlank && pages.length % 2 === 1) {
-        const { width, height } = pages[pages.length - 1].getSize();
-        out.addPage([width, height]);
-      }
-    }
-  }
-  const bytes = await out.save();
-  if (lastUrl) URL.revokeObjectURL(lastUrl);
-  lastUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
-  return { url: lastUrl, pages: out.getPageCount() };
-}
-
-async function withBusy(fn) {
-  ['print', 'download', 'clear'].forEach(id => $(id).disabled = true);
-  try { await fn(); } catch (e) { setStatus('Error: ' + e.message); console.error(e); }
-  finally { const s = $('status').textContent; render(); if (s.startsWith('Error') || s.startsWith('Opening') || s.startsWith('Downloaded')) setStatus(s); }
-}
-
-$('print').onclick = () => withBusy(async () => {
-  setStatus('Merging PDFs…');
-  const { url, pages } = await buildMerged();
-  const frame = $('frame');
-  frame.onload = () => {
-    try { frame.contentWindow.focus(); frame.contentWindow.print(); }
-    catch (e) { window.open(url, '_blank'); }
-  };
-  frame.src = url;
-  setStatus(`Opening the print dialog (${pages} pages). If it does not appear, use "Download merged PDF".`);
-});
-
-$('download').onclick = () => withBusy(async () => {
-  setStatus('Merging PDFs…');
-  const { url, pages } = await buildMerged();
-  const a = document.createElement('a');
-  a.href = url; a.download = 'printallpdfs-merged.pdf'; a.click();
-  setStatus(`Downloaded: ${pages} pages.`);
-});
-
-$('clear').onclick = () => { items = []; render(); };
-$('sort').onchange = () => { applySort(); render(); };
-
-const drop = $('drop');
-drop.onclick = () => $('file').click();
-drop.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('file').click(); } };
-$('file').onchange = e => { addFiles(e.target.files); e.target.value = ''; };
-['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
-['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
-drop.addEventListener('drop', e => addFiles(e.dataTransfer.files));
-window.addEventListener('dragover', e => e.preventDefault());
-window.addEventListener('drop', e => e.preventDefault());
-</script>
+<script src="app.js"></script>
 </body>
 </html>

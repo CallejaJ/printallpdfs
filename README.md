@@ -49,7 +49,10 @@ The `buildMerged` function creates a new `PDFDocument`, copies every page from e
 
 | Component | Role |
 |---|---|
-| **`index.html`** | Single-page UI, styles and application logic with no build step |
+| **`index.html`** | Page markup with sticky glass header, two-panel layout and footer |
+| **`styles.css`** | Design tokens for dark and light themes, layout and component styles |
+| **`app.js`** | Queue management, i18n, theme switching and the merge and print flow |
+| **`images/`** | `favicon.svg` and `logo.svg` brand assets |
 | **pdf-lib** | Parses and merges PDFs entirely in the browser |
 | **`vendor/pdf-lib.min.js`** | Local fallback loaded when the jsDelivr CDN is unreachable |
 | **Hidden print `iframe`** | Hosts the merged PDF and opens the browser print dialog |
@@ -59,7 +62,7 @@ The `buildMerged` function creates a new `PDFDocument`, copies every page from e
 
 ## Technology Stack
 
-- **Frontend**: HTML5, CSS3 with `prefers-color-scheme` dark mode, vanilla JavaScript (ES2022)
+- **Frontend**: HTML5, CSS3 with custom-property themes and glassmorphism header, vanilla JavaScript (ES2022)
 - **PDF Processing**: pdf-lib 1.17.1 via jsDelivr, with a vendored copy
 - **Testing**: Node.js 22 built-in test runner (`node:test`), Playwright with Chromium
 - **Deployment**: Vercel static hosting
@@ -70,12 +73,17 @@ The `buildMerged` function creates a new `PDFDocument`, copies every page from e
 2. **Private by design** — files are read and merged locally and never uploaded to a server.
 3. **Duplex-safe output** — optional blank-page padding keeps each document starting on a new sheet.
 4. **Flexible ordering** — reorder manually or sort by name or date before printing.
-5. **Works offline** — the vendored pdf-lib lets the page run from disk without network access.
-6. **Zero build** — a single HTML file deploys to any static host.
+5. **Bilingual interface** — English and Spanish with a header toggle, plus light and dark themes.
+6. **Works offline** — the vendored pdf-lib lets the page run from disk without network access.
+7. **Zero build** — plain HTML, CSS and JavaScript deploy to any static host.
 
 ## Testing Strategy
 
 The end-to-end test in `tests/e2e.test.js` generates fixture PDFs with pdf-lib, serves the app with `tests/server.js`, and drives it in headless Chromium through Playwright. It checks non-PDF filtering, name sorting, and that the downloaded merge has the exact expected page count with copies and duplex padding enabled. It also confirms the print action runs without page errors. The physical print dialog is verified manually, since browsers do not expose it to automation.
+
+## Localization
+
+All interface strings live in the `STRINGS` dictionary in `app.js`, with `en` as the default and `es` as the second language. Elements are bound through `data-i18n` attributes and status messages are stored as keys, so switching language re-renders everything in place. The chosen language and theme are kept in `localStorage` when available.
 
 ## Project Setup
 
