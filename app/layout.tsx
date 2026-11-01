@@ -26,10 +26,15 @@ export const metadata: Metadata = {
     "Málaga",
   ],
   alternates: { canonical: "/" },
+  manifest: "/site.webmanifest",
   icons: {
-    icon: "/images/favicon.svg",
-    shortcut: "/images/favicon.svg",
-    apple: "/images/favicon.svg",
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: { url: "/apple-touch-icon.png", sizes: "180x180" },
   },
   openGraph: {
     type: "website",

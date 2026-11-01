@@ -91,7 +91,7 @@ The app is a single static page, so discoverability is handled at build time by 
 | **`lib/site.ts`, `lib/seo.ts`** | Site URL, author and geo constants, metadata copy and the JSON-LD graph |
 | **`app/robots.ts`, `app/sitemap.ts`** | Static `robots.txt` and `sitemap.xml` generated at build time |
 | **Hidden print `iframe`** | Hosts each merged PDF and opens the browser print dialog |
-| **`public/images/`** | `favicon.svg` and `logo.svg` brand assets |
+| **`public/`** | `favicon.ico`, `favicon.svg`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `site.webmanifest`, and `images/logo.svg` |
 | **`tests/server.js`** | Static server for the exported build, used by `npm start` and the e2e tests |
 | **`linkedin/`** | Social cover source (`cover.html`), rendered image and post copy |
 
