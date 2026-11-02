@@ -1,3 +1,5 @@
+/* Shared design system: Jorge Calleja projects. Source of truth: docs/design-system.md */
+
 * {
   box-sizing: border-box;
 }
@@ -146,6 +148,14 @@ main {
   font-weight: 600;
   letter-spacing: 0.4px;
   text-transform: uppercase;
+}
+
+/* The badge shares the CTA signature: Google colors running around the border. */
+.beta-badge:hover {
+  background:
+    linear-gradient(#5ea8ff, #5ea8ff) padding-box,
+    conic-gradient(from var(--gmaps-angle), #34a853, #4285f4, #fbbc04, #ea4335, #34a853) border-box;
+  animation: gmaps-border-spin 3s linear infinite;
 }
 
 html[data-theme="light"] .beta-badge {
