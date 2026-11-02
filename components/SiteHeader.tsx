@@ -5,6 +5,7 @@ import { useLang } from "@/lib/i18n";
 import ThemeToggle from "./ThemeToggle";
 import LanguageToggle from "./LanguageToggle";
 import Breadcrumbs from "./Breadcrumbs";
+import { BRAND, SITE_NAME } from "@/lib/site";
 
 export default function SiteHeader() {
   const { t } = useLang();
@@ -18,13 +19,14 @@ export default function SiteHeader() {
             <motion.img
               className="brand-logo"
               src="/images/logo.svg"
-              alt="PrintAllPDFs"
+              alt={SITE_NAME}
               initial={{ rotate: -8, scale: 0.8, opacity: 0 }}
               animate={{ rotate: 0, scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 260, damping: 18 }}
             />
             <span className="header-title">
-              PrintAll<span className="header-title-accent">PDFs</span>
+              {BRAND.lead}
+              <span className="header-title-accent">{BRAND.accent}</span>
             </span>
             <span className="beta-badge">Beta</span>
           </div>

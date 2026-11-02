@@ -1,5 +1,5 @@
 import { STRINGS } from "./strings";
-import { AUTHOR, GEO, SITE_NAME, SITE_URL } from "./site";
+import { AUTHOR, GEO, SITE_NAME, SITE_URL, VERSION } from "./site";
 
 const en = STRINGS.en;
 
@@ -8,7 +8,7 @@ export const SEO_DESCRIPTION =
   "Free web app to merge and print many PDFs, such as B2B delivery notes, in one job or in batches. Drag, sort and print once. Files never leave your computer.";
 
 export const BREADCRUMBS = [
-  { name: "Jorge Calleja", url: AUTHOR.url },
+  { name: AUTHOR.name, url: AUTHOR.url },
   { name: SITE_NAME, url: `${SITE_URL}/` },
 ];
 
@@ -49,7 +49,7 @@ export function structuredData() {
         inLanguage: ["en", "es"],
         isAccessibleForFree: true,
         offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-        softwareVersion: "2.0.0-beta",
+        softwareVersion: `${VERSION}-beta`,
         author: { "@id": `${SITE_URL}/#author` },
         areaServed: { "@type": "Country", name: "Spain" },
         featureList: [

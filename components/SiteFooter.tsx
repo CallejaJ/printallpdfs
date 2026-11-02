@@ -1,7 +1,9 @@
 "use client";
 
 import { useLang } from "@/lib/i18n";
+import { AUTHOR, VERSION } from "@/lib/site";
 
+// Shared footer: © year · Diseño Web Málaga · version · beta label.
 export default function SiteFooter() {
   const { t } = useLang();
 
@@ -9,10 +11,10 @@ export default function SiteFooter() {
     <footer className="site-footer">
       <span>
         © {new Date().getFullYear()} ·{" "}
-        <a href="https://jorgecalleja.dev" target="_blank" rel="noopener noreferrer">
+        <a href={AUTHOR.url} target="_blank" rel="noopener noreferrer">
           Diseño Web Málaga
         </a>{" "}
-        · v2.0.0 · {t("footerBeta")}
+        · v{VERSION} · {t("footerBeta")}
       </span>
     </footer>
   );

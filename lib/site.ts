@@ -2,6 +2,9 @@
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://printallpdfs.vercel.app").replace(/\/$/, "");
 
 export const SITE_NAME = "PrintAllPDFs";
+// Brand split for the header: the second part is painted in --accent.
+export const BRAND = { lead: "PrintAll", accent: "PDFs" };
+export const VERSION = "2.0.0";
 export const AUTHOR = { name: "Jorge Calleja", url: "https://jorgecalleja.dev" };
 
 // Geographic focus for local and generative search (Málaga, Andalucía, Spain).
