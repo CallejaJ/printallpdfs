@@ -1,6 +1,6 @@
 # PrintAllPDFs
 
-<div align="left">
+<div align="center">
     <img src="https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
     <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React" />
     <img src="https://img.shields.io/badge/TypeScript-5.5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
@@ -11,7 +11,7 @@
     <img src="https://img.shields.io/badge/Vercel-Hosting-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
 </div>
 
-<p align="left">
+<p align="center">
     <i>A Next.js app that merges many PDFs in the browser and sends them to the local printer through a single print dialog, in one job or in batches.</i>
 </p>
 
@@ -93,7 +93,8 @@ The app is a single static page, so discoverability is handled at build time by 
 | **Hidden print `iframe`** | Hosts each merged PDF and opens the browser print dialog |
 | **`public/`** | `favicon.ico`, `favicon.svg`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png`, `site.webmanifest`, and `images/logo.svg` |
 | **`tests/server.js`** | Static server for the exported build, used by `npm start` and the e2e tests |
-| **`linkedin/`** | Social cover source (`cover.html`), rendered image and post copy |
+| **`tools/`** | Icon generation script and LinkedIn cover sources, rendered images and post copy |
+| **CI** | `.github/workflows/test.yml` runs `npm ci`, `npm test` and `npm run build` on Node 22 for every push to `main` and every pull request |
 
 ## Technology Stack
 
@@ -101,6 +102,7 @@ The app is a single static page, so discoverability is handled at build time by 
 - **Animation**: Motion 12 (`motion/react`)
 - **PDF Processing**: pdf-lib 1.17.1, bundled with the app
 - **Testing**: Jest 30 with ts-jest for unit tests, Node.js test runner with Playwright for end-to-end tests
+- **CI**: GitHub Actions on Node 22
 - **Deployment**: Vercel
 
 ## Key Features
@@ -115,7 +117,7 @@ The app is a single static page, so discoverability is handled at build time by 
 
 ## Testing Strategy
 
-Unit tests in `lib/__tests__/pdf.test.ts` run with Jest and cover file filtering, natural sorting in both directions, batching, page totals with padding, and merging real pdf-lib documents with progress callbacks. End-to-end tests in `tests/e2e/app.test.js` serve the exported build, drive it in headless Chromium and check filtering, sorting, duplex totals, the downloaded page count and the batch flow from "Print batch 1 of 2" to "All batches sent". The physical print dialog is verified manually, since browsers do not expose it to automation.
+Unit tests in `lib/__tests__/pdf.test.ts` run with Jest and cover file filtering, natural sorting in both directions, batching, page totals with padding, and merging real pdf-lib documents with progress callbacks. End-to-end tests in `tests/e2e/app.test.js` serve the exported build, drive it in headless Chromium and check filtering, sorting, duplex totals, the downloaded page count and the batch flow from "Print batch 1 of 2" to "All batches sent". GitHub Actions runs the unit tests and the build on every push to `main`. The physical print dialog is verified manually, since browsers do not expose it to automation.
 
 ## Localization
 
@@ -130,7 +132,12 @@ All interface strings live in `lib/strings.ts`, with `en` as the default and `es
    npx playwright install chromium
    ```
 
-2. No environment variables are required. Set `NEXT_PUBLIC_SITE_URL` only if the production domain differs from `https://printallpdfs.vercel.app`.
+2. Optionally copy `.env.example` to `.env.local`; every variable has a default:
+
+   ```env
+   # --- Site ---
+   NEXT_PUBLIC_SITE_URL=https://printallpdfs.vercel.app
+   ```
 
 3. Start the development server:
 
