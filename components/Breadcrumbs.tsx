@@ -1,6 +1,6 @@
 import { BREADCRUMBS } from "@/lib/seo";
 
-/** Visible breadcrumb trail, mirrored by the BreadcrumbList structured data. */
+/** Visually hidden breadcrumb trail (screen readers and crawlers only), mirrored by the BreadcrumbList structured data. */
 export default function Breadcrumbs() {
   return (
     <nav className="breadcrumbs" aria-label="Breadcrumb">

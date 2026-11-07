@@ -88,7 +88,7 @@ The `src/api/` and `src/persistence/` folders from the generic layout map to `ap
 - **Background**: dot grid on `body` (`radial-gradient` of `--grid-dot`, 16 px).
 - **Layout**: content width `max-width: 1600px`, side padding `40px` (16 px under 640 px). Header, page intro, main and footer share that frame.
 - **Header**: sticky glass bar with logo, brand name with the accent part in `--accent`, **Beta** badge, then the ES/EN toggle and the theme toggle on the right.
-- **Page intro**: breadcrumbs (Jorge Calleja › Project) and a one-paragraph legend under the header.
+- **Page intro**: breadcrumbs (Jorge Calleja › Project) and a one-paragraph legend under the header. In PrintAllPDFs the breadcrumbs are visually hidden (see `docs/decisions/0002-hide-visible-breadcrumbs.md`).
 - **Footer**: `© {year} · Diseño Web Málaga · v{version} · {Beta label}`, with "Diseño Web Málaga" linking to `https://jorgecalleja.dev`.
 - **Shapes**: radius 12 px on panels, 8 to 10 px on inputs and rows, `999px` on pills, badges and primary buttons.
 - **Primary button**: turquoise gradient pill; on hover, the Google-colors conic border spins (`--gmaps-angle`).

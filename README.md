@@ -68,7 +68,7 @@ The app is a single static page, so discoverability is handled at build time by 
 
 | Signal | Source | Purpose |
 |---|---|---|
-| **Breadcrumbs** | `components/Breadcrumbs.tsx`, `BreadcrumbList` in `lib/seo.ts` | Visible trail "Jorge Calleja › PrintAllPDFs" plus matching structured data |
+| **Breadcrumbs** | `components/Breadcrumbs.tsx`, `BreadcrumbList` in `lib/seo.ts` | Visually hidden trail "Jorge Calleja › PrintAllPDFs" (screen readers and crawlers only) plus matching structured data |
 | **robots.txt** | `app/robots.ts` | Allows all crawlers, including Googlebot, Bingbot, GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot and Google-Extended |
 | **sitemap.xml** | `app/sitemap.ts` | Lists the home page and `llms.txt` |
 | **llms.txt** | `public/llms.txt` | Plain-language summary for generative engines: features, limits and privacy |

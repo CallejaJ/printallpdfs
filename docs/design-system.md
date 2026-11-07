@@ -94,7 +94,7 @@ Panels use `padding: 22px 28px` (16 px on mobile) and `border: 1px solid var(--b
 | **Beta badge** | Pill, 11 px uppercase, `padding: 3px 8px`, 2 px transparent border that shows the Google conic border on hover |
 | **Language toggle** | Pill group 40 px high on `--panel-2`; buttons `ES` and `EN`; active one has a sliding `--accent` pill (`layoutId="lang-pill"`) and white text |
 | **Theme toggle** | 40×40 button, radius 8, sun icon in dark mode and moon in light; icon rotates in and out; turns `--accent` on hover |
-| **Page intro** | Breadcrumbs (12 px, `›` separators) and a 13 px muted legend, max 820 px wide |
+| **Page intro** | Breadcrumbs (12 px, `›` separators; visually hidden in PrintAllPDFs) and a 13 px muted legend, max 820 px wide |
 | **Panel** | `--panel` background, 1 px border, radius 12 |
 | **Primary button** | `linear-gradient(135deg, var(--accent), var(--accent-strong))`, pill, 15 px bold, `--button-text`; hover lifts 1 px and spins the Google conic border |
 | **Secondary button** | `--panel-2`, pill, 600 weight; hover turns border and text `--accent` |
