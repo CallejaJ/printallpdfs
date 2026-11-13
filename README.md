@@ -84,7 +84,7 @@ The app is a single static page, so discoverability is handled at build time by 
 | **`app/layout.tsx`** | Root layout with theme bootstrap script, language and motion providers, header and footer |
 | **`app/page.tsx`** | Client page that owns queue state, sorting, batches and the print and download flow |
 | **`app/globals.css`** | Design tokens for dark and light themes, layout and component styles |
-| **`components/`** | `SiteHeader`, `SiteFooter`, `Breadcrumbs`, `DropZone`, `FileQueue`, `PrintOptions`, `HowItWorks`, toggles and icons |
+| **`components/`** | `SiteHeader`, `SiteFooter`, `Breadcrumbs`, `DropZone`, `FileQueue`, `PrintOptions`, `PrintJob`, `HowItWorks`, toggles and icons |
 | **`lib/pdf.ts`** | Sorting, batching, page counting and merging with pdf-lib |
 | **`lib/strings.ts`** | English and Spanish dictionaries, shared by the client UI and the server-side structured data |
 | **`lib/i18n.tsx`** | Typed `t()` helper and language React context |

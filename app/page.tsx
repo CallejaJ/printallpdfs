@@ -17,7 +17,8 @@ import {
 } from "@/lib/pdf";
 import DropZone from "@/components/DropZone";
 import FileQueue from "@/components/FileQueue";
-import PrintOptions, { type BatchInfo } from "@/components/PrintOptions";
+import PrintOptions from "@/components/PrintOptions";
+import PrintJob, { type BatchInfo } from "@/components/PrintJob";
 import HowItWorks from "@/components/HowItWorks";
 
 type Status = { fn: (t: ReturnType<typeof useLang>["t"]) => string; error?: boolean } | null;
@@ -178,7 +179,7 @@ export default function Home() {
     <>
       <div className="grid">
         <motion.section
-          className="panel"
+          className="panel files-panel"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: "easeOut" }}
@@ -217,6 +218,16 @@ export default function Home() {
             onBatchSize={setBatchSize}
             padBlank={padBlank}
             onPadBlank={setPadBlank}
+          />
+        </motion.div>
+
+        <motion.div
+          className="job-col"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: "easeOut", delay: 0.16 }}
+        >
+          <PrintJob
             stats={stats}
             batches={batches}
             busy={busy}
