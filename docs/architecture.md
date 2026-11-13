@@ -10,7 +10,7 @@ PrintAllPDFs is a static Next.js export served by Vercel. Everything runs in the
 |---|---|---|
 | **App shell** | `app/layout.tsx` | Metadata, theme bootstrap script, JSON-LD, language and motion providers, header and footer |
 | **Page** | `app/page.tsx` | Owns queue state, sorting, batches and the print and download flow |
-| **UI components** | `components/` | `SiteHeader`, `SiteFooter`, `Breadcrumbs`, `DropZone`, `FileQueue`, `PrintOptions`, `HowItWorks`, toggles and icons |
+| **UI components** | `components/` | `SiteHeader`, `SiteFooter`, `Breadcrumbs`, `DropZone`, `FileQueue`, `PrintOptions`, `PrintJob`, `HowItWorks`, toggles and icons |
 | **Core logic** | `lib/pdf.ts` | `isPdf`, `countPages`, `sortItems`, `chunk`, `pagesToPrint`, `mergePdfs`; covered by Jest |
 | **Strings and i18n** | `lib/strings.ts`, `lib/i18n.tsx` | English and Spanish dictionaries and the typed `t()` helper |
 | **Site and SEO** | `lib/site.ts`, `lib/seo.ts` | URL, brand, version, author, geo data and the JSON-LD graph |

@@ -270,11 +270,18 @@ html[data-theme="light"] .beta-badge {
   padding: 24px 40px 64px;
 }
 
+/* Three columns on wide screens: files, options, print job. The job column
+   sticks under the header so the print button stays in view with long queues. */
 .grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr) minmax(0, 0.85fr);
   gap: 24px;
   align-items: start;
+}
+
+.job-col {
+  position: sticky;
+  top: 80px;
 }
 
 .panel {
@@ -1134,9 +1141,22 @@ button.secondary:disabled {
   text-decoration: underline;
 }
 
+/* Medium screens: files on top across the width, options and job below. */
+@media (max-width: 1280px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .files-panel {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+  .job-col {
+    position: static;
   }
 }
 
