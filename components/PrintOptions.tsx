@@ -27,7 +27,7 @@ const spring = { type: "spring" as const, stiffness: 500, damping: 38 };
 export default function PrintOptions(p: Props) {
   const { t, dict } = useLang();
   return (
-    <aside className="panel">
+    <aside className="panel options-panel">
       <h2>{t("optionsTitle")}</h2>
       <p className="panel-sub">{t("optionsSub")}</p>
 
