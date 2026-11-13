@@ -1141,13 +1141,36 @@ button.secondary:disabled {
   text-decoration: underline;
 }
 
-/* Medium screens: files on top across the width, options and job below. */
-@media (max-width: 1280px) {
+/* Medium screens: files and job side by side (similar heights), options below
+   across the full width with its groups in two columns. */
+@media (min-width: 901px) and (max-width: 1280px) {
   .grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    grid-template-areas:
+      "files job"
+      "options options";
   }
   .files-panel {
+    grid-area: files;
+  }
+  .job-col {
+    grid-area: job;
+  }
+  .options-col {
+    grid-area: options;
+  }
+  .options-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 40px;
+  }
+  .options-panel > h2,
+  .options-panel > .panel-sub {
     grid-column: 1 / -1;
+  }
+  .options-panel > .opt-group:nth-of-type(2) {
+    border-top: none;
+    padding-top: 4px;
   }
 }
 

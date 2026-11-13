@@ -205,6 +205,7 @@ export default function Home() {
         </motion.section>
 
         <motion.div
+          className="options-col"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: "easeOut", delay: 0.08 }}

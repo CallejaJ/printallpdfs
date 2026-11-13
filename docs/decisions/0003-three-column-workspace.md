@@ -14,7 +14,7 @@ Split the right column in two. `PrintOptions` keeps order, batches, duplex and c
 | Width | Layout |
 |---|---|
 | **> 1280 px** | Files, options and job side by side (`1.25fr 1fr 0.85fr`); the job column sticks under the header |
-| **901 to 1280 px** | Files across the full width, options and job below in two columns |
+| **901 to 1280 px** | Files and job side by side, options below across the full width with its groups in two columns (updated 2026-11-13: the first version put files on top and left a gap under the short job panel, seen in desktop mode on a phone) |
 | **≤ 900 px** | One column, same order as before |
 
 ## Alternatives
