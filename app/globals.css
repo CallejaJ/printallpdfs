@@ -1153,8 +1153,10 @@ button.secondary:disabled {
   .files-panel {
     grid-area: files;
   }
+  /* Not sticky here: it would slide over the options row below. */
   .job-col {
     grid-area: job;
+    position: static;
   }
   .options-col {
     grid-area: options;
